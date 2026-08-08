@@ -54,8 +54,18 @@ const ja: typeof en = {
   hidden: "(Hidden)",
 };
 
+let currentLang = "system";
+
+export function setLanguage(lang: string) {
+  currentLang = lang;
+}
+
 export function t(key: keyof typeof en, vars?: Record<string, string | number>): string {
-  const locale = moment.locale();
+  let locale = currentLang;
+  if (locale === "system") {
+    locale = moment.locale();
+  }
+  
   // デフォルトは英語、jaなら日本語
   const strings = locale === "ja" ? ja : en;
   let text = strings[key] || en[key] || key;

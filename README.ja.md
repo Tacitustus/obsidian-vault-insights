@@ -39,6 +39,26 @@ Obsidianの利用状況（ノートの閲覧・更新頻度、リンク構造、
 2. BRAT設定から `Add Beta plugin` を選択
 3. リポジトリURL `Takimoto/obsidian-vault-insights` を入力して追加
 
+## 🚀 使い方 (Getting Started)
+
+### 1. Obsidian内蔵ダッシュボード (無料版・Premium版 共通)
+プラグインを有効化した後、Obsidian内で直接ダッシュボードを表示できます。
+- `Ctrl/Cmd + P` を押してコマンドパレットを開く
+- **`Vault Insights: Open Dashboard`** を検索して実行する
+
+### 2. Web版ダッシュボード (Premium版限定)
+Premiumライセンスをお持ちの場合、ご自身のGitHubアカウント上にWeb版ダッシュボードを自動構築できます。
+1. Obsidianの設定から「Vault Insights」を開く。
+2. Premiumライセンスキーを入力し、GitHub連携 (「Login to GitHub」ボタン) を行う。
+3. 設定画面の **「Deploy Web Dashboard (Webダッシュボードのデプロイ)」** ボタンをクリックする。
+4. ご自身のGitHubアカウントに自動で新しいリポジトリ（デフォルト名: `vault-insights-dashboard`）が作成され、同時に **GitHub Pages** が自動で有効化されます。
+   *(⚠️ 注意: 必ず新規の空リポジトリ名を使用してください。また、リポジトリは1つ作成するだけでよく、同アカウントのすべてのVaultはこの1つのリポジトリで自動的に一元管理されます)*
+5. ブラウザを開き、以下のURLにアクセスしてダッシュボードを閲覧します：
+   👉 `https://<あなたのGitHubユーザー名>.github.io/vault-insights-dashboard/`
+   *(※ 初回アクセス時は、GitHub側のビルドが完了するまで1〜2分程度かかる場合があります)*
+
+設定完了後は、バックグラウンドで自動的に最新のノート閲覧・編集状況がこのリポジトリに同期され、Webダッシュボードが常に最新の状態に保たれます！
+
 ## 💎 Premium版について (BYO デプロイ)
 
 Premium版では、**あなた自身のGitHubアカウント**に専用のWebダッシュボードが自動構築され（Bring Your Own デプロイ）、どこからでもブラウザでアクセスできるようになります。

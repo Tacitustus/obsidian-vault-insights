@@ -56,6 +56,8 @@ export interface VaultInsightsSettings {
   syncEnabled: boolean;
   /** 同期する間隔（分単位、デフォルト30、最小5）(Phase 6) */
   syncIntervalMinutes: number;
+  /** 表示言語: system, en, ja */
+  language: string;
 }
 
 export const DEFAULT_SETTINGS: VaultInsightsSettings = {
@@ -67,6 +69,7 @@ export const DEFAULT_SETTINGS: VaultInsightsSettings = {
   githubRepoName: "vault-insights-dashboard",
   syncEnabled: false,
   syncIntervalMinutes: 30,
+  language: "system",
 };
 
 // ---------------------------------------------------------------------------

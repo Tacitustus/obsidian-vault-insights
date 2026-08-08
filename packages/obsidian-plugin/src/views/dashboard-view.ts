@@ -2,7 +2,7 @@ import { ItemView, WorkspaceLeaf, setIcon } from "obsidian";
 import type VaultInsightsPlugin from "../main";
 import { aggregateEvents } from "../core/aggregator";
 import { enrichAggregatesWithVaultFiles } from "../core/vault-enricher";
-import { t } from "../i18n";
+import { t, setLanguage } from "../i18n";
 import {
   filterAndSortNotes,
   getTopOpenedNotes,
@@ -56,10 +56,12 @@ export class DashboardView extends ItemView {
     // Add main class for styling
     container.addClass("vault-insights-dashboard");
 
+    const settings = this.plugin.getSettings();
+    setLanguage(settings.language);
+
     // Fetch and aggregate data
     const events = this.plugin.getEvents();
     const baseNotes = aggregateEvents([...events]);
-    const settings = this.plugin.getSettings();
     const allNotes = enrichAggregatesWithVaultFiles(this.plugin.app, baseNotes, settings.privacyMode);
 
     // Calculate total stats
@@ -116,7 +118,21 @@ export class DashboardView extends ItemView {
     const card = parent.createEl("div", { cls: "vi-card vi-main-list" });
 
     const header = card.createEl("div", { cls: "vi-card-header" });
+    header.style.display = "flex";
+    header.style.justifyContent = "space-between";
+    header.style.alignItems = "center";
     header.createEl("h3", { text: t("noteList") });
+
+    const langSelect = header.createEl("select", { cls: "vi-sort-select" });
+    langSelect.createEl("option", { text: "System Default", value: "system" });
+    langSelect.createEl("option", { text: "English", value: "en" });
+    langSelect.createEl("option", { text: "日本語", value: "ja" });
+    langSelect.value = this.plugin.getSettings().language;
+    langSelect.addEventListener("change", async (e) => {
+      const val = (e.target as HTMLSelectElement).value;
+      await this.plugin.updateSettings({ language: val });
+      this.render(); // Re-render to apply new language
+    });
 
     // Controls: Search & Sort
     const controls = card.createEl("div", { cls: "vi-controls" });

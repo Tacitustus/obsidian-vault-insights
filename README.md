@@ -39,6 +39,26 @@ _Note: Free users can still build and host custom dashboards using exported JSON
 2. Open BRAT settings and select `Add Beta plugin`.
 3. Enter repository URL `Takimoto/obsidian-vault-insights` and submit.
 
+## 🚀 Getting Started (How to Use)
+
+### 1. In-Obsidian Dashboard (Free & Premium)
+After enabling the plugin, you can view your vault insights directly within Obsidian:
+- Press `Ctrl/Cmd + P` to open the Command Palette.
+- Search for and run **`Vault Insights: Open Dashboard`**.
+
+### 2. Web Dashboard (Premium)
+With a Premium license, you can deploy a standalone Web Dashboard to your GitHub account:
+1. Go to Obsidian Settings > Vault Insights.
+2. Enter your Premium License Key and authenticate with GitHub (Click "Login to GitHub").
+3. Click the **"Deploy Web Dashboard"** button in the settings.
+4. The plugin will create a new repository (default: `vault-insights-dashboard`) on your GitHub account and automatically enable GitHub Pages. 
+   *(⚠️ Important: Please use a new, empty repository name. You only need to create one repository; all your vaults on the same account will be consolidated and managed in this single repository.)*
+5. Your dashboard will be accessible at:
+   👉 `https://<your-github-username>.github.io/vault-insights-dashboard/`
+   *(Note: It may take 1-2 minutes for GitHub Pages to build the site for the first time)*
+
+Once deployed, the plugin will automatically sync your latest vault activity to this repository in the background, keeping your Web Dashboard up to date!
+
 ## 💎 Premium Edition (Bring Your Own Deployment)
 
 With Premium, a dedicated Web Dashboard is automatically deployed directly to **your own GitHub account** (Bring Your Own Deployment), accessible from any browser anywhere.

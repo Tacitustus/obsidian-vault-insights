@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import i18n from "../i18n";
 import type { VaultSnapshot } from "@vault-insights/shared";
 import { SummaryCards } from "./SummaryCards";
 import { TopNotesTable } from "./TopNotesTable";
@@ -25,17 +26,28 @@ export function Dashboard({ snapshot }: Props) {
           </p>
         </div>
 
-        <div className="relative w-full md:w-72">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-textSecondary">
-            <Search size={16} />
+        <div className="flex items-center gap-3 w-full md:w-auto mt-3 md:mt-0">
+          <div className="relative w-full md:w-72">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-textSecondary">
+              <Search size={16} />
+            </div>
+            <input
+              type="text"
+              className="block w-full pl-10 pr-3 py-2 border border-border rounded-lg leading-5 bg-background text-textPrimary placeholder-textSecondary focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent sm:text-sm transition-all"
+              placeholder={t("searchPlaceholder")}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
-          <input
-            type="text"
-            className="block w-full pl-10 pr-3 py-2 border border-border rounded-lg leading-5 bg-background text-textPrimary placeholder-textSecondary focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent sm:text-sm transition-all"
-            placeholder={t("searchPlaceholder")}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+
+          <select
+            className="bg-background border border-border text-textPrimary text-sm rounded-lg focus:ring-accent focus:border-accent block p-2"
+            value={i18n.language.startsWith("ja") ? "ja" : "en"}
+            onChange={(e) => i18n.changeLanguage(e.target.value)}
+          >
+            <option value="en">English</option>
+            <option value="ja">日本語</option>
+          </select>
         </div>
       </div>
 

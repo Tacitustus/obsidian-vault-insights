@@ -65,7 +65,25 @@ export class VaultInsightsSettingTab extends PluginSettingTab {
           }),
       );
 
-    // ─── ライセンス (License) ─────────────────
+    new Setting(containerEl)
+      .setName("表示言語 (Display Language)")
+      .setDesc("UIの言語を手動で設定します。/ Manually set the UI language.")
+      .addDropdown((dropdown) => {
+        dropdown
+          .addOption("system", "System Default")
+          .addOption("en", "English")
+          .addOption("ja", "日本語")
+          .setValue(this.plugin.getSettings().language)
+          .onChange(async (value) => {
+            await this.plugin.updateSettings({ language: value });
+            // i18nの言語も更新しておく
+            const { setLanguage } = require("./i18n");
+            setLanguage(value);
+            this.display(); // 再描画
+          });
+      });
+
+    // ─── Vault Insights (基本設定) ─────────────────
     containerEl.createEl("h2", { text: "Premium ライセンス" });
 
     let licenseStatusEl: HTMLElement;
@@ -129,7 +147,7 @@ export class VaultInsightsSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("GitHub リポジトリ名")
-      .setDesc("Webダッシュボードを展開するリポジトリ名です。")
+      .setDesc("Webダッシュボードを展開する新規の空リポジトリ名です。(1つのリポジトリで同アカウントの全Vaultが一元管理されます)")
       .addText((text) =>
         text
           .setPlaceholder("vault-insights-dashboard")
