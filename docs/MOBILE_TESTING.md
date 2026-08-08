@@ -1,34 +1,42 @@
-# モバイル環境（iOS / Android）向けテスト項目
-
-本プラグインは `isDesktopOnly: false` であり、モバイル版 Obsidian での動作を保証します。
-モバイル環境特有の制約（CORS、NodeAPIの不在、バックグラウンド処理の制限など）をクリアしているかを確認するため、以下の項目を手動テストしてください。
-
-## 1. インストールと初期動作
-- [ ] iOS / Android 端末の Obsidian アプリでプラグインをインストール・有効化できるか。
-  - *検証観点*: Node.js組み込みモジュール (`fs`, `crypto`) に依存したコードが残っていると、有効化時にエラーとなります。
-- [ ] 初期化時に Vault ID が正常に採番され、`data.json` に保存されるか。
-  - *検証観点*: `crypto.randomUUID()` が WebView のコンテキストで正常に動作しているかの確認。
-
-## 2. 無料版機能（ローカル動作）
-- [ ] クリック・編集・リンク作成などのイベントが正常に収集されているか。
-- [ ] Obsidian内のダッシュボード（`Vault Insights` ビュー）を開き、表示が崩れないか。
-  - *検証観点*: 狭い画面幅でのレスポンシブ対応（CSS）が適切か。
-- [ ] ダッシュボード上の検索、ソート機能が動作するか。
-- [ ] JSON手動エクスポートコマンドを実行し、OS標準のファイル保存・共有ダイアログが立ち上がり、JSONがエクスポートされるか。
-
-## 3. Premium版機能（認証とデプロイ）
-- [ ] 設定画面から「GitHub と連携する」ボタンをタップし、Device Flow 認証が開始されるか。
-- [ ] 認証コードのコピーボタンが動作し、クリップボードにコピーされるか。
-- [ ] **外部ブラウザの起動と復帰**: 「Open GitHub」ボタンで、OS標準のブラウザ（iOS Safari / Android Chrome）が確実に、かつ別のアプリ画面として正常に立ち上がるか。
-  - *検証観点*: WebView内にGitHubのページが開かれてしまい、Obsidianの画面に戻れなくなる「詰み」状態が発生しないこと。iOS/Androidのそれぞれで実機検証するまで、`_system`等のフォールバック挙動が確定しません。
-- [ ] ブラウザで認証を終えて Obsidian アプリに復帰した際、ポーリングがタイムアウトせずにアクセストークンを取得できているか（※モバイル特有の復帰タイムラグ検証）。
-- [ ] 認証成功後、手動でダッシュボードを展開/更新ボタンを押し、デプロイが成功するか。
-
-## 4. 自動同期（バックグラウンド処理）
-- [ ] **アプリ起動時のオンデマンド同期**: アプリをタスクキルし、再度起動した際に、同期（GitHubへのpush）が実行されるか。
-- [ ] **バックグラウンド放置時の動作**: アプリを開いたまま放置、またはバックグラウンドに回した状態で、設定したインターバル（例: 5分）で同期が走るか。また、OSによるサスペンドから復帰した際にクラッシュしないか。
-  - *検証観点*: モバイルOS特有のプロセスサスペンドに対する耐性の確認。
+English | [日本語](./MOBILE_TESTING.ja.md)
 
 ---
 
-> 📝 本テストは、メジャーアップデート時およびネイティブAPI（Web Crypto API, 外部連携など）に関わる修正を行った際に必ず実施してください。
+# Mobile Environment (iOS / Android) Test Checklist
+
+This plugin has `isDesktopOnly: false` and promises full support for mobile Obsidian.
+To verify that mobile-specific constraints (CORS, lack of Node APIs, background limits) are met, manually execute the following checklist.
+
+## 1. Installation & Initial Startup
+
+- [ ] Plugin installs and enables cleanly in the Obsidian mobile app on iOS / Android.
+  - _Verification Point_: If code depending on Node.js built-in modules (`fs`, `crypto`) remains, enabling will throw an error.
+- [ ] Vault ID is successfully generated upon initialization and saved to `data.json`.
+  - _Verification Point_: Ensure `crypto.randomUUID()` works properly inside the WebView context.
+
+## 2. Free Features (Local Operation)
+
+- [ ] Events (clicks, edits, link creations) are correctly captured and aggregated.
+- [ ] Opening the in-Obsidian dashboard (`Vault Insights` view) displays cleanly without broken layouts.
+  - _Verification Point_: CSS responsiveness behaves correctly on narrow screens.
+- [ ] Search and sorting functionality inside the dashboard functions as expected.
+- [ ] Running manual JSON export invokes the native OS file save/share dialog and exports the JSON file.
+
+## 3. Premium Features (Authentication & Deployment)
+
+- [ ] Tapping "Connect with GitHub" in plugin settings initiates Device Flow authentication.
+- [ ] "Copy Code" button functions properly and copies user code to clipboard.
+- [ ] **External Browser Launch & Return**: Tapping "Open GitHub" cleanly launches the native system browser (iOS Safari / Android Chrome) as a separate window/app.
+  - _Verification Point_: Avoid GitHub opening inside the WebView and trapping the user. Validate fallback behaviors (`_system`, etc.) on real iOS/Android devices.
+- [ ] Returning to Obsidian after completing browser authentication acquires the access token without polling timeouts (testing mobile background wake delay).
+- [ ] Tapping manual dashboard deploy/update after successful auth completes deployment cleanly.
+
+## 4. Automatic Sync (Background Processing)
+
+- [ ] **On-Demand Sync at Startup**: Force-closing the app and re-launching triggers sync (push to GitHub).
+- [ ] **Background Idle Operation**: Leaving the app open in background triggers interval sync (e.g., 5 mins) or handles OS process suspension gracefully without crashing.
+  - _Verification Point_: Resilience against mobile OS process suspension.
+
+---
+
+> 📝 Perform this manual testing checklist prior to major releases or changes involving native web APIs (Web Crypto API, external integrations).

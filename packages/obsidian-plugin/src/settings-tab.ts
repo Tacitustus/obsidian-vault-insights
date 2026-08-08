@@ -9,7 +9,12 @@ import type VaultInsightsPlugin from "./main";
 import { isPremiumUser } from "./premium/license";
 import { verifyLicense } from "@vault-insights/shared";
 import { GITHUB_CLIENT_ID } from "./premium/constants";
-import { ConsentModal, DeviceAuthModal, startDeviceFlow, pollForToken } from "./premium/github-device-auth";
+import {
+  ConsentModal,
+  DeviceAuthModal,
+  startDeviceFlow,
+  pollForToken,
+} from "./premium/github-device-auth";
 import { DeployOrchestrator } from "./premium/deploy-orchestrator";
 import { createVaultSnapshot } from "./core/snapshot-builder";
 import { aggregateEvents } from "./core/aggregator";
@@ -38,11 +43,9 @@ export class VaultInsightsSettingTab extends PluginSettingTab {
           "プライバシーモードを有効にすることを推奨します。",
       )
       .addToggle((toggle) =>
-        toggle
-          .setValue(this.plugin.getSettings().privacyMode)
-          .onChange(async (value) => {
-            await this.plugin.updateSettings({ privacyMode: value });
-          }),
+        toggle.setValue(this.plugin.getSettings().privacyMode).onChange(async (value) => {
+          await this.plugin.updateSettings({ privacyMode: value });
+        }),
       );
 
     // ─── ヴォールトエイリアス ─────────────────────────
@@ -72,27 +75,25 @@ export class VaultInsightsSettingTab extends PluginSettingTab {
       .addTextArea((text) => {
         text.inputEl.rows = 3;
         text.inputEl.style.width = "100%";
-        text
-          .setValue(this.plugin.getSettings().licenseKey)
-          .onChange(async (value) => {
-            await this.plugin.updateSettings({ licenseKey: value });
-            const result = verifyLicense(value);
-            
-            if (result.valid) {
-              licenseStatusEl.setText("✅ ライセンスが有効です");
-              licenseStatusEl.style.color = "var(--text-success)";
-              new Notice("Vault Insights: ライセンスが有効です。Premium機能が解放されました。");
-              this.display(); // Premium UIを描画するため再ロード
-            } else {
-              licenseStatusEl.setText(`❌ 無効なライセンス: ${result.error}`);
-              licenseStatusEl.style.color = "var(--text-error)";
-            }
-          });
+        text.setValue(this.plugin.getSettings().licenseKey).onChange(async (value) => {
+          await this.plugin.updateSettings({ licenseKey: value });
+          const result = verifyLicense(value);
+
+          if (result.valid) {
+            licenseStatusEl.setText("✅ ライセンスが有効です");
+            licenseStatusEl.style.color = "var(--text-success)";
+            new Notice("Vault Insights: ライセンスが有効です。Premium機能が解放されました。");
+            this.display(); // Premium UIを描画するため再ロード
+          } else {
+            licenseStatusEl.setText(`❌ 無効なライセンス: ${result.error}`);
+            licenseStatusEl.style.color = "var(--text-error)";
+          }
+        });
       });
 
     licenseStatusEl = containerEl.createEl("div", {
       text: "",
-      attr: { style: "font-weight: bold; margin-bottom: 20px; font-size: 0.9em;" }
+      attr: { style: "font-weight: bold; margin-bottom: 20px; font-size: 0.9em;" },
     });
 
     const currentLicense = this.plugin.getSettings().licenseKey;
@@ -111,18 +112,18 @@ export class VaultInsightsSettingTab extends PluginSettingTab {
     const premiumUnlocked = isPremiumUser(currentLicense);
 
     containerEl.createEl("h2", { text: "Webダッシュボード連携 (Premium)" });
-    
+
     if (!premiumUnlocked) {
       containerEl.createEl("p", {
         text: "この機能を利用するには有効なライセンスキーが必要です。",
         cls: "mod-warning",
-        attr: { style: "color: var(--text-muted); font-style: italic;" }
+        attr: { style: "color: var(--text-muted); font-style: italic;" },
       });
       return; // ライセンスがなければ以下のUIを描画しない
     }
 
     containerEl.createEl("p", {
-      text: "GitHub Pagesを用いて、自動更新されるWebダッシュボードをホストします。"
+      text: "GitHub Pagesを用いて、自動更新されるWebダッシュボードをホストします。",
     });
 
     new Setting(containerEl)
@@ -144,7 +145,7 @@ export class VaultInsightsSettingTab extends PluginSettingTab {
       .setDesc(
         hasToken
           ? "連携済みです。リポジトリにダッシュボードを展開します。"
-          : "Device Flow を使って認証し、Webダッシュボードを自動展開します。"
+          : "Device Flow を使って認証し、Webダッシュボードを自動展開します。",
       );
 
     if (!hasToken) {
@@ -156,7 +157,7 @@ export class VaultInsightsSettingTab extends PluginSettingTab {
             new ConsentModal(this.app, () => {
               this.startDeviceAuthFlow();
             }).open();
-          })
+          }),
       );
     } else {
       deploySetting
@@ -166,42 +167,38 @@ export class VaultInsightsSettingTab extends PluginSettingTab {
             .setCta()
             .onClick(() => {
               this.runDeployOrchestrator();
-            })
+            }),
         )
         .addButton((btn) =>
-          btn
-            .setButtonText("連携解除")
-            .onClick(async () => {
-              await this.plugin.updateSettings({ githubToken: undefined });
-              this.plugin.syncScheduler.stop();
-              this.display(); // 再描画
-            })
+          btn.setButtonText("連携解除").onClick(async () => {
+            await this.plugin.updateSettings({ githubToken: undefined });
+            this.plugin.syncScheduler.stop();
+            this.display(); // 再描画
+          }),
         );
 
       // ─── 自動同期 (Sync) ─────────────────
       containerEl.createEl("h4", { text: "自動同期 (Auto Sync)" });
-      
+
       containerEl.createEl("p", {
         text: "※ Obsidianを閉じている間は同期されません。モバイルではさらにこの制約が強くなります。",
         cls: "mod-warning",
-        attr: { style: "color: var(--text-muted); font-size: 0.9em; margin-bottom: 15px;" }
+        attr: { style: "color: var(--text-muted); font-size: 0.9em; margin-bottom: 15px;" },
       });
 
       new Setting(containerEl)
         .setName("バックグラウンド同期")
         .setDesc("定期的にスナップショットをGitHubへ自動プッシュします。")
         .addToggle((toggle) =>
-          toggle
-            .setValue(this.plugin.getSettings().syncEnabled)
-            .onChange(async (value) => {
-              await this.plugin.updateSettings({ syncEnabled: value });
-              if (value) {
-                this.plugin.syncScheduler.start();
-              } else {
-                this.plugin.syncScheduler.stop();
-              }
-              this.display();
-            })
+          toggle.setValue(this.plugin.getSettings().syncEnabled).onChange(async (value) => {
+            await this.plugin.updateSettings({ syncEnabled: value });
+            if (value) {
+              this.plugin.syncScheduler.start();
+            } else {
+              this.plugin.syncScheduler.stop();
+            }
+            this.display();
+          }),
         );
 
       if (this.plugin.getSettings().syncEnabled) {
@@ -243,26 +240,23 @@ export class VaultInsightsSettingTab extends PluginSettingTab {
           nextSyncText = new Date(nextSyncTime).toLocaleString();
         }
 
-        new Setting(containerEl)
-          .setName("最終同期日時")
-          .setDesc(lastSyncText);
+        new Setting(containerEl).setName("最終同期日時").setDesc(lastSyncText);
 
-        new Setting(containerEl)
-          .setName("次回同期予定")
-          .setDesc(nextSyncText);
-          
+        new Setting(containerEl).setName("次回同期予定").setDesc(nextSyncText);
+
         if (failures >= 3) {
           new Setting(containerEl)
             .setName("同期再開")
             .setDesc("エラーカウントをリセットし、自動同期を再開します。")
-            .addButton(btn => btn
-              .setButtonText("リセット")
-              .setCta()
-              .onClick(async () => {
-                await store.resetSyncFailures();
-                this.plugin.syncScheduler.start();
-                this.display();
-              })
+            .addButton((btn) =>
+              btn
+                .setButtonText("リセット")
+                .setCta()
+                .onClick(async () => {
+                  await store.resetSyncFailures();
+                  this.plugin.syncScheduler.start();
+                  this.display();
+                }),
             );
         }
       }
@@ -277,7 +271,7 @@ export class VaultInsightsSettingTab extends PluginSettingTab {
     try {
       new Notice("Vault Insights: 認証を開始しています...");
       const authInfo = await startDeviceFlow(GITHUB_CLIENT_ID);
-      
+
       const modal = new DeviceAuthModal(
         this.app,
         authInfo.user_code,
@@ -286,25 +280,25 @@ export class VaultInsightsSettingTab extends PluginSettingTab {
           await this.plugin.updateSettings({ githubToken: token });
           new Notice("Vault Insights: GitHub 認証に成功しました！");
           this.display(); // 設定タブを再描画
-          
+
           // そのままデプロイへ進む
           this.runDeployOrchestrator();
         },
         () => {
           new Notice("Vault Insights: 認証がキャンセルされました。");
-        }
+        },
       );
-      
+
       modal.open();
-      
+
       // 非同期でトークンをポーリング
       const token = await pollForToken(
         GITHUB_CLIENT_ID,
         authInfo.device_code,
         authInfo.interval,
-        Platform.isMobileApp
+        Platform.isMobileApp,
       );
-      
+
       modal.complete(token);
     } catch (error: any) {
       console.error(error);
@@ -327,7 +321,11 @@ export class VaultInsightsSettingTab extends PluginSettingTab {
 
       const orchestrator = new DeployOrchestrator(settings.githubToken);
       const label = settings.vaultAlias || this.app.vault.getName();
-      await orchestrator.runDeployment(settings.githubRepoName || "vault-insights-dashboard", snapshot, label);
+      await orchestrator.runDeployment(
+        settings.githubRepoName || "vault-insights-dashboard",
+        snapshot,
+        label,
+      );
     } catch (error: any) {
       console.error(error);
       new Notice(`Vault Insights: デプロイ準備に失敗しました - ${error.message}`);

@@ -2,7 +2,7 @@
   "name": "obsidian-vault-insights",
   "version": "0.0.1",
   "private": true,
-  "description": "Obsidian Vault Insights — Obsidianの利用状況を可視化する分析プラグイン & Webダッシュボード",
+  "description": "Obsidian Vault Insights — Analytics plugin & web dashboard / Obsidianの利用状況を可視化する分析プラグイン & Webダッシュボード",
   "scripts": {
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",

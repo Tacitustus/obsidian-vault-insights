@@ -12,10 +12,10 @@
   .glass-panel {
     @apply bg-surface/80 backdrop-blur-md border border-border rounded-xl shadow-lg;
   }
-  
+
   .premium-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: theme('colors.border') transparent;
+    scrollbar-color: theme("colors.border") transparent;
   }
   .premium-scrollbar::-webkit-scrollbar {
     width: 6px;

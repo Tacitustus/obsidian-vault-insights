@@ -3,7 +3,7 @@
   "name": "Vault Insights",
   "version": "0.0.1",
   "minAppVersion": "1.5.0",
-  "description": "Obsidian利用状況の可視化・分析プラグイン。ローカル完結の無料版とBYOデプロイのプレミアム版。",
+  "description": "Visualize and analyze your Obsidian vault activity. Free local version & BYO deploy Premium version. / Obsidian利用状況の可視化・分析プラグイン。",
   "author": "",
   "authorUrl": "https://github.com/Takimoto",
   "fundingUrl": {

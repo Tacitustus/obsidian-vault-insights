@@ -2,7 +2,7 @@
   "name": "@vault-insights/obsidian-plugin",
   "version": "0.0.1",
   "private": true,
-  "description": "Obsidian Vault Insights plugin — ローカル分析ダッシュボード",
+  "description": "Obsidian Vault Insights plugin — Local analytics dashboard / ローカル分析ダッシュボード",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",

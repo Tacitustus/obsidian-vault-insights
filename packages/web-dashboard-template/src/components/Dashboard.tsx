@@ -22,7 +22,7 @@ export function Dashboard({ snapshot }: Props) {
             Last updated: {new Date(snapshot.generatedAt).toLocaleString()}
           </p>
         </div>
-        
+
         <div className="relative w-full md:w-72">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-textSecondary">
             <Search size={16} />

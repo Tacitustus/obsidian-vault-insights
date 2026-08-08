@@ -8,8 +8,8 @@ export function EmptyState() {
       </div>
       <h2 className="text-2xl font-bold text-textPrimary mb-3">No Data Available Yet</h2>
       <p className="text-textSecondary max-w-md mx-auto">
-        If you just set up Vault Insights, please use the 
-        <strong className="text-textPrimary mx-1">"Export snapshot as JSON"</strong> 
+        If you just set up Vault Insights, please use the
+        <strong className="text-textPrimary mx-1">"Export snapshot as JSON"</strong>
         command inside Obsidian to generate and sync your first dataset.
       </p>
     </div>

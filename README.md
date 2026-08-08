@@ -1,85 +1,95 @@
+English | [日本語](./README.ja.md)
+
+---
+
 # Obsidian Vault Insights
 
-Obsidianの利用状況（ノートの閲覧・更新頻度、リンク構造、タグ活用など）を横断的に可視化する分析プラグイン。
+An analytics plugin for Obsidian to visualize your vault activity across note views, edits, link structures, and tag usage.
 
-<!-- TODO: ここにスクリーンショットを挿入 -->
+<!-- TODO: Insert screenshot here -->
+
 ![Dashboard Screenshot Placeholder](https://via.placeholder.com/800x450?text=Dashboard+Screenshot)
 
-## ✨ 機能一覧（無料版 / Premium版）
+## ✨ Feature Comparison (Free vs. Premium)
 
-| 機能 | 無料版 | Premium版 |
-|---|---|---|
-| クリック/編集/リンク/タグの集計 | ✅ | ✅ |
-| Obsidian内ダッシュボード | ✅ フル機能 | ✅ |
-| JSON手動エクスポート | ✅ | ✅ |
-| GitHub Device Flow ワンクリック認証 | ❌ | ✅ |
-| 自動デプロイ（Pages設定含む） | ❌ | ✅ |
-| 定期自動push（バックグラウンド同期） | ❌ | ✅ |
-| Web版ダッシュボード（外部ホスティング） | ❌ (自身で構築可) | ✅ 作り込み版を提供 |
-| 複数ヴォールト統合ビュー | ❌ | ✅ |
+| Feature                                 | Free Version       | Premium Version       |
+| --------------------------------------- | ------------------ | --------------------- |
+| Click / Edit / Link / Tag aggregation   | ✅                 | ✅                    |
+| In-Obsidian Dashboard                   | ✅ Full features   | ✅                    |
+| Manual JSON Export                      | ✅                 | ✅                    |
+| GitHub Device Flow One-Click Auth       | ❌                 | ✅                    |
+| Auto-Deployment (including Pages setup) | ❌                 | ✅                    |
+| Automated Background Push & Sync        | ❌                 | ✅                    |
+| Web Dashboard (External Hosting)        | ❌ (Self-hostable) | ✅ Pre-built & hosted |
+| Multi-Vault Consolidated View           | ❌                 | ✅                    |
 
-※ 無料版でもエクスポートしたJSONを使って独自のダッシュボードを自作・ホストすることは可能です。Premium版は「**自動化と美しく作り込まれたUX**」を提供するものです。
+_Note: Free users can still build and host custom dashboards using exported JSON files. Premium provides **seamless automation and a fully polished UX**._
 
-## 📦 インストール方法
+## 📦 Installation
 
-### コミュニティプラグインからのインストール (推奨)
-1. Obsidianの設定 > コミュニティプラグイン > 閲覧 を開く
-2. `Vault Insights` で検索してインストール
-3. 有効化する
+### From Community Plugins (Recommended)
 
-### BRAT経由の開発版インストール (ベータ版)
-1. [BRAT](https://github.com/TfTHacker/obsidian42-brat) プラグインをインストールして有効化
-2. BRAT設定から `Add Beta plugin` を選択
-3. リポジトリURL `Takimoto/obsidian-vault-insights` を入力して追加
+1. Open Obsidian Settings > Community plugins > Browse
+2. Search for `Vault Insights` and click Install
+3. Enable the plugin
 
-## 💎 Premium版について (BYO デプロイ)
+### Beta Installation via BRAT
 
-Premium版では、**あなた自身のGitHubアカウント**に専用のWebダッシュボードが自動構築され（Bring Your Own デプロイ）、どこからでもブラウザでアクセスできるようになります。
-開発者が管理するサーバーにデータが送られることは一切なく、すべてのデータはあなた自身の管理下に置かれます。
+1. Install and enable the [BRAT](https://github.com/TfTHacker/obsidian42-brat) plugin.
+2. Open BRAT settings and select `Add Beta plugin`.
+3. Enter repository URL `Takimoto/obsidian-vault-insights` and submit.
 
-**[Premiumライセンスの購入はこちら (Gumroad / Lemon Squeezy 等へのリンク)]()**
+## 💎 Premium Edition (Bring Your Own Deployment)
 
-## 対応環境と制約事項 (Limitations)
+With Premium, a dedicated Web Dashboard is automatically deployed directly to **your own GitHub account** (Bring Your Own Deployment), accessible from any browser anywhere.
+No data is ever sent to developer-managed servers — all your data remains 100% under your ownership and control.
 
-本プラグインはデスクトップ（Windows / Mac / Linux）とモバイル（iOS / Android）の両方で動作しますが、OSの仕様により**自動同期（Premium機能）の動作保証範囲**が異なります。
+**[Purchase Premium License (Gumroad / Lemon Squeezy link)](<>)**
 
-| 機能 | デスクトップ | モバイル (iOS/Android) |
-|---|---|---|
-| イベント収集・ダッシュボード表示 | ✅ 完全対応 | ✅ 完全対応 |
-| 手動デプロイ / JSONエクスポート | ✅ 完全対応 | ✅ 完全対応 |
-| 自動バックグラウンド同期 | ⚠️ Obsidian起動中のみ動作 | ⚠️ アプリ起動時のオンデマンド同期が主軸 |
+## Supported Environments & Limitations
 
-- **自動同期の共通仕様**: サーバーを持たないローカル完結型プラグインのため、**Obsidianを完全に閉じている間は同期（GitHubへのバックグラウンドpush）は行われません。**
-- **モバイル版の制約**: モバイルOS（iOS / Android）の厳しい省電力仕様により、バックグラウンドでの定期タイマー実行はOSによって強制的に停止される可能性が高いです。そのため、モバイル版では「インターバル指定のバックグラウンド同期」はベストエフォート（できればやる）扱いとなり、代わりに**「アプリ起動時（フォアグラウンド復帰時）」にオンデマンドで同期される仕組みが主軸**となります。確実な定期実行を保証するものではないことを予めご了承ください。
+This plugin works on Desktop (Windows / Mac / Linux) and Mobile (iOS / Android), but **automated background sync (Premium)** operating boundaries vary by OS platform.
 
-## 🔒 プライバシーポリシー
+| Feature                              | Desktop                            | Mobile (iOS / Android)                           |
+| ------------------------------------ | ---------------------------------- | ------------------------------------------------ |
+| Event collection & Dashboard display | ✅ Fully Supported                 | ✅ Fully Supported                               |
+| Manual Deploy / JSON Export          | ✅ Fully Supported                 | ✅ Fully Supported                               |
+| Automated Background Sync            | ⚠️ Works while Obsidian is running | ⚠️ Primarily relies on on-demand sync at startup |
 
-あなたのノートデータはあなたのものです。
-- **収集されるデータ**: ノートの相対パス（設定でハッシュ化可能）、閲覧/編集回数、タグ名、リンク数など（JSONに書き出されるメタデータのみ）。ノートの**本文は一切収集しません**。
-- **送信先**: 外部送信先は、**あなた自身が指定したGitHubリポジトリのみ**です。プラグイン開発者や第三者のサーバーにデータが送信されることは絶対にありません。
-- **プライバシーモード**: 設定から「プライバシーモード」を有効にすると、ファイルパス（ファイル名）自体を伏せてハッシュIDのみで集計を行うことができます。
+- **Common Sync Behavior**: As a serverless, local-first plugin, **syncing (background push to GitHub) does not occur while Obsidian is completely closed.**
+- **Mobile OS Limitations**: Due to aggressive power management on mobile operating systems (iOS / Android), scheduled background timers may be suspended by the OS. Interval background sync is best-effort on mobile; **on-demand sync upon app launch (foreground return)** serves as the primary sync mechanism.
 
-## 🤝 コントリビュート
+## 🔒 Privacy Policy
 
-本プロジェクトへのご協力に感謝します！詳細は [CONTRIBUTING.md](./CONTRIBUTING.md) をご一読ください。
-バグ報告や機能提案はGitHub Issuesにて受け付けています。
+Your vault data belongs to you.
 
-## 💖 サポート・寄付
+- **Collected Metadata**: Relative note paths (can be hashed in settings), view/edit counts, tag names, link counts (only metadata written to exported JSON). Note **content is NEVER collected**.
+- **Data Destinations**: The only external destination is **the GitHub repository specified by you**. Data is NEVER sent to developer or third-party servers.
+- **Privacy Mode**: Enabling "Privacy Mode" in settings replaces file paths with hashed IDs in calculations.
 
-Vault Insights がお役に立ちましたら、ぜひご支援をお願いします！
+## 🤝 Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](./CONTRIBUTING.md) ([Japanese version](./CONTRIBUTING.ja.md)) before submitting a Pull Request.
+Report bugs or propose features on GitHub Issues.
+
+## 💖 Support & Sponsorship
+
+If Vault Insights helps you stay productive, consider supporting the project!
+
 - [GitHub Sponsors](https://github.com/sponsors/Takimoto)
 - [Ko-fi](https://ko-fi.com/takimoto)
 
-## 開発者向けのライセンス検証キー生成
+## Developer License Key Generation
 
-(本項目はプラグイン開発に貢献する方向けの手順です)
+(Instructions for contributors working on plugin development)
+
 ```bash
-# 1. 新しいキーペアの生成 (初回のみ)
+# 1. Generate new keypair (First time only)
 npx tsx scripts/generate-license.ts --generate-keys
-# -> 出力された秘密鍵をローカル環境変数 VAULT_INSIGHTS_PRIVATE_KEY に設定します。
-# -> 出力された公開鍵を packages/shared/src/license.ts にハードコードします。
+# -> Set generated private key to local env var VAULT_INSIGHTS_PRIVATE_KEY
+# -> Hardcode generated public key into packages/shared/src/license.ts
 
-# 2. 自分用（無期限）ライセンスの生成
+# 2. Generate self (unlimited) license key
 npx tsx scripts/generate-license.ts --issued-to "developer@example.com" --plan "premium"
-# -> 出力された Base64 文字列を Obsidian プラグインの設定画面（Premium ライセンスキー）に貼り付けます。
+# -> Paste outputted Base64 string into Obsidian plugin Settings (Premium License Key)
 ```

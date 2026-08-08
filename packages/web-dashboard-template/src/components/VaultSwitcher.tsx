@@ -30,25 +30,25 @@ export function VaultSwitcher({ vaultIndex, selectedId, onSelect }: Props) {
         </div>
         <h1 className="text-xl font-bold text-textPrimary hidden md:block">Vaults:</h1>
       </div>
-      
+
       <div className="flex flex-wrap gap-2">
         <button
           onClick={() => onSelect("__summary__")}
           className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-            selectedId === "__summary__" 
-              ? "bg-accent text-white shadow-md shadow-accent/20" 
+            selectedId === "__summary__"
+              ? "bg-accent text-white shadow-md shadow-accent/20"
               : "bg-surface text-textSecondary hover:bg-surfaceHover hover:text-textPrimary"
           }`}
         >
           全体サマリー
         </button>
-        {vaultIndex.vaults.map(v => (
+        {vaultIndex.vaults.map((v) => (
           <button
             key={v.vaultId}
             onClick={() => onSelect(v.vaultId)}
             className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-              selectedId === v.vaultId 
-                ? "bg-accent text-white shadow-md shadow-accent/20" 
+              selectedId === v.vaultId
+                ? "bg-accent text-white shadow-md shadow-accent/20"
                 : "bg-surface text-textSecondary hover:bg-surfaceHover hover:text-textPrimary"
             }`}
           >

@@ -97,7 +97,7 @@ export type VaultIndex = z.infer<typeof VaultIndexSchema>;
  * 将来 schemaVersion: 2 が導入された場合、ここで生JSONの `schemaVersion` を判定し、
  * 古いバージョンであればv2の形式にアップグレード（マイグレーション）してから
  * v2のZodスキーマでパースする設計とする。
- * 
+ *
  * 例:
  * if (rawData && typeof rawData === "object" && rawData.schemaVersion === 1) {
  *   rawData = migrateV1toV2(rawData);

@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "description": "BYOデプロイされるWebダッシュボード (React + TypeScript + TailwindCSS + Vite)",
+  "description": "BYO-deployed Web Dashboard (React + TypeScript + TailwindCSS + Vite) / BYOデプロイされるWebダッシュボード",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

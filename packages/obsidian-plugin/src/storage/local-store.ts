@@ -128,7 +128,7 @@ export class LocalStore {
     const raw = await this.persistence.loadData();
     if (raw && typeof raw === "object") {
       const loaded = raw as Partial<PluginData>;
-      
+
       const mergedSettings = { ...DEFAULT_SETTINGS, ...loaded.settings };
       // 既存データに vaultId がない場合は自動生成する (UUIDv4)
       if (!mergedSettings.vaultId) {
@@ -148,7 +148,7 @@ export class LocalStore {
       this.data.settings.vaultId = crypto.randomUUID();
       this.dirty = true;
     }
-    
+
     // もしロード直後に dirty になっていれば保存する (初回等)
     if (this.dirty) {
       await this.save();
@@ -176,9 +176,7 @@ export class LocalStore {
     return { ...this.data.settings };
   }
 
-  async updateSettings(
-    partial: Partial<VaultInsightsSettings>,
-  ): Promise<void> {
+  async updateSettings(partial: Partial<VaultInsightsSettings>): Promise<void> {
     this.data.settings = { ...this.data.settings, ...partial };
     this.dirty = true;
     await this.save();

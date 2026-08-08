@@ -12,9 +12,7 @@ import type { NoteEvent } from "@vault-insights/shared";
 // ヘルパー: テスト用イベントを簡潔に生成する
 // ---------------------------------------------------------------------------
 
-function makeEvent(
-  overrides: Partial<NoteEvent> & { noteId: string },
-): NoteEvent {
+function makeEvent(overrides: Partial<NoteEvent> & { noteId: string }): NoteEvent {
   return {
     notePath: overrides.notePath ?? `path/to/${overrides.noteId}.md`,
     type: overrides.type ?? "open",
@@ -161,5 +159,3 @@ describe("generateNoteId", () => {
     expect(id1).not.toBe(id2);
   });
 });
-
-

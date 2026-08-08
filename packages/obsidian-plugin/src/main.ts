@@ -37,7 +37,7 @@ export default class VaultInsightsPlugin extends Plugin {
     // Dashboard View の登録
     this.registerView(
       "vault-insights-dashboard",
-      (leaf) => new (require("./views/dashboard-view").DashboardView)(leaf, this)
+      (leaf) => new (require("./views/dashboard-view").DashboardView)(leaf, this),
     );
 
     // リボンアイコンの追加
@@ -65,9 +65,12 @@ export default class VaultInsightsPlugin extends Plugin {
 
     // 定期的にイベントログを保存する（5分間隔）
     this.registerInterval(
-      window.setInterval(() => {
-        void this.store.save();
-      }, 5 * 60 * 1000),
+      window.setInterval(
+        () => {
+          void this.store.save();
+        },
+        5 * 60 * 1000,
+      ),
     );
 
     // Sync Scheduler の初期化
@@ -95,12 +98,12 @@ export default class VaultInsightsPlugin extends Plugin {
   // ---------------------------------------------------------------------------
   // View アクティベーション
   // ---------------------------------------------------------------------------
-  
+
   async activateDashboardView() {
     const { workspace } = this.app;
-    
+
     let leaf = workspace.getLeavesOfType("vault-insights-dashboard")[0];
-    
+
     if (!leaf) {
       const rightLeaf = workspace.getRightLeaf(false);
       if (rightLeaf) {
@@ -108,7 +111,7 @@ export default class VaultInsightsPlugin extends Plugin {
         leaf = rightLeaf;
       }
     }
-    
+
     if (leaf) {
       workspace.revealLeaf(leaf);
     }
@@ -117,7 +120,7 @@ export default class VaultInsightsPlugin extends Plugin {
   // ---------------------------------------------------------------------------
   // データアクセス（DashboardView 用）
   // ---------------------------------------------------------------------------
-  
+
   getEvents(): readonly NoteEvent[] {
     return this.store.getEvents();
   }
@@ -134,9 +137,7 @@ export default class VaultInsightsPlugin extends Plugin {
     return this.store.getSettings();
   }
 
-  async updateSettings(
-    partial: Partial<VaultInsightsSettings>,
-  ): Promise<void> {
+  async updateSettings(partial: Partial<VaultInsightsSettings>): Promise<void> {
     await this.store.updateSettings(partial);
   }
 

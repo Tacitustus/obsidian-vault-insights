@@ -1,4 +1,8 @@
-# PROMPTS.md — Antigravity実行プロンプト集
+English | [日本語](./PROMPTS.ja.md)
+
+---
+
+# PROMPTS.md — Antigravity Prompts Collection
 
 使い方: `AGENTS.md` と `BLUEPRINT.md` を先にプロジェクトルート（`docs/`推奨）に置いた上で、
 各フェーズのプロンプトを**上から順に**、1フェーズずつAntigravityに投げてください。

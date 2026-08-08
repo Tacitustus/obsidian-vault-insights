@@ -14,16 +14,14 @@ export function filterAndSortNotes(
   notes: NoteAggregate[],
   filter: FilterOptions,
   sortField: SortField,
-  sortOrder: SortOrder
+  sortOrder: SortOrder,
 ): NoteAggregate[] {
   let result = [...notes];
 
   // フィルタ
   if (filter.searchQuery) {
     const query = filter.searchQuery.toLowerCase();
-    result = result.filter((n) =>
-      n.notePath.toLowerCase().includes(query)
-    );
+    result = result.filter((n) => n.notePath.toLowerCase().includes(query));
   }
 
   // ソート
@@ -32,9 +30,7 @@ export function filterAndSortNotes(
     const valB = b[sortField];
 
     if (typeof valA === "string" && typeof valB === "string") {
-      return sortOrder === "asc"
-        ? valA.localeCompare(valB)
-        : valB.localeCompare(valA);
+      return sortOrder === "asc" ? valA.localeCompare(valB) : valB.localeCompare(valA);
     } else {
       if (valA < valB) return sortOrder === "asc" ? -1 : 1;
       if (valA > valB) return sortOrder === "asc" ? 1 : -1;
@@ -48,10 +44,7 @@ export function filterAndSortNotes(
 /**
  * オープン回数が多い順にトップN件を取得する
  */
-export function getTopOpenedNotes(
-  notes: NoteAggregate[],
-  limit: number = 10
-): NoteAggregate[] {
+export function getTopOpenedNotes(notes: NoteAggregate[], limit: number = 10): NoteAggregate[] {
   return [...notes]
     .filter((n) => n.openCount > 0)
     .sort((a, b) => b.openCount - a.openCount)
@@ -69,7 +62,7 @@ export function getUnopenedNotes(notes: NoteAggregate[]): NoteAggregate[] {
  * タグの出現回数を集計し、降順にソートして返す
  */
 export function getTagCounts(
-  notes: NoteAggregate[]
+  notes: NoteAggregate[],
 ): { tag: string; count: number; maxCount: number }[] {
   const counts = new Map<string, number>();
   for (const note of notes) {

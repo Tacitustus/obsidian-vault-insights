@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { validateSnapshot, type VaultIndex, type VaultSnapshot } from "@vault-insights/shared";
 
-export type DataState<T> = 
+export type DataState<T> =
   | { status: "loading" }
   | { status: "error"; error: string }
   | { status: "empty" }
@@ -20,13 +20,13 @@ export function useVaultData() {
         const res = await fetch("/vaults/index.json");
         if (!res.ok) {
           if (res.status === 404) {
-             // 初回デプロイ直後など
-             if (isMounted) setVaultIndex({ status: "empty" });
-             return;
+            // 初回デプロイ直後など
+            if (isMounted) setVaultIndex({ status: "empty" });
+            return;
           }
           throw new Error(`Failed to fetch index: ${res.statusText}`);
         }
-        
+
         const data = await res.json();
         // 簡易的な検証 (実装をシンプルに保つため型キャストか、後で共有スキーマで検証)
         if (data && Array.isArray(data.vaults) && data.vaults.length > 0) {
@@ -38,12 +38,18 @@ export function useVaultData() {
           if (isMounted) setVaultIndex({ status: "empty" });
         }
       } catch (err) {
-        if (isMounted) setVaultIndex({ status: "error", error: err instanceof Error ? err.message : "Unknown error" });
+        if (isMounted)
+          setVaultIndex({
+            status: "error",
+            error: err instanceof Error ? err.message : "Unknown error",
+          });
       }
     };
 
     fetchIndex();
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // 2. Fetch Snapshot for Selected Vault
@@ -56,20 +62,20 @@ export function useVaultData() {
       try {
         // VaultIdはエンコードしておく
         const res = await fetch(`/vaults/${encodeURIComponent(selectedVaultId)}/snapshot.json`);
-        
+
         if (!res.ok) {
-           if (res.status === 404) {
-             if (isMounted) setSnapshot({ status: "empty" });
-             return;
-           }
-           throw new Error(`Failed to fetch snapshot: ${res.statusText}`);
+          if (res.status === 404) {
+            if (isMounted) setSnapshot({ status: "empty" });
+            return;
+          }
+          throw new Error(`Failed to fetch snapshot: ${res.statusText}`);
         }
 
         const rawData = await res.json();
-        
+
         // Zod を使ってパース＆バリデーション
         const validation = validateSnapshot(rawData);
-        
+
         if (!validation.success) {
           console.error("Snapshot validation failed:", validation.error);
           throw new Error("Invalid snapshot format");
@@ -80,19 +86,24 @@ export function useVaultData() {
         }
       } catch (err) {
         if (isMounted) {
-          setSnapshot({ status: "error", error: err instanceof Error ? err.message : "Unknown error" });
+          setSnapshot({
+            status: "error",
+            error: err instanceof Error ? err.message : "Unknown error",
+          });
         }
       }
     };
 
     fetchSnapshot();
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, [selectedVaultId]);
 
   return {
     vaultIndex,
     selectedVaultId,
     setSelectedVaultId,
-    snapshot
+    snapshot,
   };
 }

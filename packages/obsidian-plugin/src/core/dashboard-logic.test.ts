@@ -32,12 +32,7 @@ describe("Dashboard Logic", () => {
 
   describe("filterAndSortNotes", () => {
     it("searchQueryでノートパスを部分一致検索できる (大文字小文字区別なし)", () => {
-      const result = filterAndSortNotes(
-        notes,
-        { searchQuery: "project" },
-        "openCount",
-        "desc"
-      );
+      const result = filterAndSortNotes(notes, { searchQuery: "project" }, "openCount", "desc");
       expect(result).toHaveLength(2);
       expect(result[0]!.notePath).toBe("Project A.md");
       expect(result[1]!.notePath).toBe("Project B.md");
@@ -68,7 +63,7 @@ describe("Dashboard Logic", () => {
     it("openCount が0のノートだけを返す", () => {
       const result = getUnopenedNotes(notes);
       expect(result).toHaveLength(2);
-      expect(result.map(n => n.notePath)).toContain("Daily/2026-08-01.md");
+      expect(result.map((n) => n.notePath)).toContain("Daily/2026-08-01.md");
     });
   });
 
@@ -86,8 +81,8 @@ describe("Dashboard Logic", () => {
       expect(result[0]!.tag).toBe("#dev");
       expect(result[0]!.count).toBe(3);
       expect(result[0]!.maxCount).toBe(3); // dev is max
-      
-      const obsidian = result.find(t => t.tag === "#obsidian")!;
+
+      const obsidian = result.find((t) => t.tag === "#obsidian")!;
       expect(obsidian.count).toBe(2);
       expect(obsidian.maxCount).toBe(3);
     });

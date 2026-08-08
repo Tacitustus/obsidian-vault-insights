@@ -5,11 +5,7 @@ module.exports = {
   root: true,
   parser: "@typescript-eslint/parser",
   plugins: ["@typescript-eslint"],
-  extends: [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier",
-  ],
+  extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
   env: {
     browser: true,
     es2021: true,
@@ -64,23 +60,19 @@ module.exports = {
               },
               {
                 name: "child_process",
-                message:
-                  "Node 'child_process' はモバイル環境で使用不可。",
+                message: "Node 'child_process' はモバイル環境で使用不可。",
               },
               {
                 name: "node:child_process",
-                message:
-                  "Node 'child_process' はモバイル環境で使用不可。",
+                message: "Node 'child_process' はモバイル環境で使用不可。",
               },
               {
                 name: "os",
-                message:
-                  "Node 'os' はモバイル環境で使用不可。",
+                message: "Node 'os' はモバイル環境で使用不可。",
               },
               {
                 name: "node:os",
-                message:
-                  "Node 'os' はモバイル環境で使用不可。",
+                message: "Node 'os' はモバイル環境で使用不可。",
               },
               {
                 name: "crypto",

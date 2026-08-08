@@ -1,18 +1,25 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import fs from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Paths
-const ROOT_DIR = path.resolve(__dirname, '..');
-const DIST_DIR = path.join(ROOT_DIR, 'packages', 'web-dashboard-template', 'dist');
-const OUTPUT_DIR = path.join(ROOT_DIR, 'packages', 'obsidian-plugin', 'src', 'premium', 'embedded-dashboard');
-const OUTPUT_FILE = path.join(OUTPUT_DIR, 'dashboard-assets.generated.ts');
+const ROOT_DIR = path.resolve(__dirname, "..");
+const DIST_DIR = path.join(ROOT_DIR, "packages", "web-dashboard-template", "dist");
+const OUTPUT_DIR = path.join(
+  ROOT_DIR,
+  "packages",
+  "obsidian-plugin",
+  "src",
+  "premium",
+  "embedded-dashboard",
+);
+const OUTPUT_FILE = path.join(OUTPUT_DIR, "dashboard-assets.generated.ts");
 
 async function main() {
-  console.log('Embedding dashboard assets...');
+  console.log("Embedding dashboard assets...");
 
   try {
     // 1. Ensure dist exists
@@ -27,7 +34,7 @@ async function main() {
 
     // 3. Read all files recursively
     const assets = {};
-    
+
     async function walk(dir) {
       const files = await fs.readdir(dir, { withFileTypes: true });
       for (const file of files) {
@@ -37,23 +44,23 @@ async function main() {
         } else {
           // Calculate relative path from dist (e.g. "assets/index.js", "index.html")
           // Use posix path separators for the key
-          const relPath = path.relative(DIST_DIR, fullPath).split(path.sep).join('/');
-          
+          const relPath = path.relative(DIST_DIR, fullPath).split(path.sep).join("/");
+
           // Decide if it's text or binary
           const ext = path.extname(file.name).toLowerCase();
-          const isText = ['.html', '.css', '.js', '.json', '.svg', '.txt', '.xml'].includes(ext);
-          
+          const isText = [".html", ".css", ".js", ".json", ".svg", ".txt", ".xml"].includes(ext);
+
           const content = await fs.readFile(fullPath);
-          
+
           if (isText) {
             assets[relPath] = {
-              type: 'text',
-              content: content.toString('utf-8')
+              type: "text",
+              content: content.toString("utf-8"),
             };
           } else {
             assets[relPath] = {
-              type: 'base64',
-              content: content.toString('base64')
+              type: "base64",
+              content: content.toString("base64"),
             };
           }
         }
@@ -74,11 +81,11 @@ export interface EmbeddedAsset {
 export const DASHBOARD_ASSETS: Record<string, EmbeddedAsset> = ${JSON.stringify(assets, null, 2)};
 `;
 
-    await fs.writeFile(OUTPUT_FILE, tsContent, 'utf-8');
-    
+    await fs.writeFile(OUTPUT_FILE, tsContent, "utf-8");
+
     console.log(`Successfully embedded ${Object.keys(assets).length} assets into ${OUTPUT_FILE}`);
   } catch (err) {
-    console.error('Failed to embed dashboard assets:', err);
+    console.error("Failed to embed dashboard assets:", err);
     process.exit(1);
   }
 }

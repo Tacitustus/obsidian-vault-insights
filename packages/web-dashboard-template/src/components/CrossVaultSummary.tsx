@@ -1,6 +1,15 @@
 import { useState, useEffect } from "react";
 import type { VaultIndex, VaultSnapshot } from "@vault-insights/shared";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+  CartesianGrid,
+} from "recharts";
 import { LoadingState, ErrorState } from "./States";
 
 interface Props {
@@ -40,7 +49,7 @@ export function CrossVaultSummary({ vaultIndex }: Props) {
         });
 
         const results = await Promise.allSettled(fetchPromises);
-        
+
         const successfulData: SummaryData[] = [];
         results.forEach((result) => {
           if (result.status === "fulfilled") {
@@ -64,7 +73,9 @@ export function CrossVaultSummary({ vaultIndex }: Props) {
 
     fetchAllSnapshots();
 
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, [vaultIndex]);
 
   if (loading) return <LoadingState />;
@@ -87,7 +98,9 @@ export function CrossVaultSummary({ vaultIndex }: Props) {
         </div>
         <div className="bg-surface p-6 rounded-2xl shadow-sm border border-border">
           <h3 className="text-textSecondary text-sm font-medium mb-1">Total Activity</h3>
-          <p className="text-3xl font-bold text-textPrimary">{(globalTotalOpens + globalTotalEdits).toLocaleString()}</p>
+          <p className="text-3xl font-bold text-textPrimary">
+            {(globalTotalOpens + globalTotalEdits).toLocaleString()}
+          </p>
         </div>
       </div>
 
@@ -97,11 +110,11 @@ export function CrossVaultSummary({ vaultIndex }: Props) {
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
-              <XAxis dataKey="label" stroke="#888" tick={{ fill: '#888' }} />
-              <YAxis stroke="#888" tick={{ fill: '#888' }} />
-              <Tooltip 
-                contentStyle={{ backgroundColor: '#1e1e1e', borderColor: '#333', color: '#fff' }}
-                itemStyle={{ color: '#fff' }}
+              <XAxis dataKey="label" stroke="#888" tick={{ fill: "#888" }} />
+              <YAxis stroke="#888" tick={{ fill: "#888" }} />
+              <Tooltip
+                contentStyle={{ backgroundColor: "#1e1e1e", borderColor: "#333", color: "#fff" }}
+                itemStyle={{ color: "#fff" }}
               />
               <Legend />
               <Bar dataKey="totalOpens" name="Opens" fill="#6366f1" radius={[4, 4, 0, 0]} />

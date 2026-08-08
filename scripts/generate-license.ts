@@ -6,7 +6,7 @@ import { Buffer } from "node:buffer";
 const options = {
   "generate-keys": { type: "boolean" as const },
   "issued-to": { type: "string" as const },
-  "plan": { type: "string" as const, default: "premium" },
+  plan: { type: "string" as const, default: "premium" },
   "expires-at": { type: "string" as const },
 };
 
@@ -16,13 +16,13 @@ if (values["generate-keys"]) {
   console.log("Generating new Ed25519 keypair...");
   const priv = require("crypto").randomBytes(32);
   const pub = ed25519.getPublicKey(priv);
-  
+
   console.log("\n[Private Key] (Set this as VAULT_INSIGHTS_PRIVATE_KEY in your env)");
   console.log(Buffer.from(priv).toString("hex"));
-  
+
   console.log("\n[Public Key] (Copy this to packages/shared/src/license.ts PUBLIC_KEY_HEX)");
   console.log(Buffer.from(pub).toString("hex"));
-  
+
   console.log("\nStore your private key securely. NEVER commit it to the repository.");
   process.exit(0);
 }

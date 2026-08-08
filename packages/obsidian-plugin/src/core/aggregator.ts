@@ -112,5 +112,3 @@ export function aggregateEvents(events: NoteEvent[]): NoteAggregate[] {
 
   return aggregates;
 }
-
-

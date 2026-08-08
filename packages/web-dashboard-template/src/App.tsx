@@ -15,7 +15,7 @@ function App() {
           <div className="flex items-center justify-between h-16">
             <div className="flex-1">
               {vaultIndex.status === "success" && (
-                <VaultSwitcher 
+                <VaultSwitcher
                   vaultIndex={vaultIndex.data}
                   selectedId={selectedVaultId}
                   onSelect={setSelectedVaultId}
@@ -29,25 +29,26 @@ function App() {
 
       {/* Main Content Area */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
         {/* Global Index States */}
         {vaultIndex.status === "loading" && <LoadingState />}
         {vaultIndex.status === "error" && <ErrorState error={vaultIndex.error} />}
         {vaultIndex.status === "empty" && <EmptyState />}
-        
+
         {/* Selected Vault Snapshot States */}
         {vaultIndex.status === "success" && selectedVaultId === "__summary__" && (
           <CrossVaultSummary vaultIndex={vaultIndex.data} />
         )}
-        
-        {vaultIndex.status === "success" && selectedVaultId && selectedVaultId !== "__summary__" && (
-          <>
-            {snapshot.status === "loading" && <LoadingState />}
-            {snapshot.status === "error" && <ErrorState error={snapshot.error} />}
-            {snapshot.status === "empty" && <EmptyState />}
-            {snapshot.status === "success" && <Dashboard snapshot={snapshot.data} />}
-          </>
-        )}
+
+        {vaultIndex.status === "success" &&
+          selectedVaultId &&
+          selectedVaultId !== "__summary__" && (
+            <>
+              {snapshot.status === "loading" && <LoadingState />}
+              {snapshot.status === "error" && <ErrorState error={snapshot.error} />}
+              {snapshot.status === "empty" && <EmptyState />}
+              {snapshot.status === "success" && <Dashboard snapshot={snapshot.data} />}
+            </>
+          )}
       </main>
     </div>
   );

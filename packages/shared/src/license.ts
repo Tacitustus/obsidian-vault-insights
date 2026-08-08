@@ -60,7 +60,7 @@ export function verifyLicense(licenseString: string): VerificationResult {
     const isValidSig = ed25519.verify(
       hexToBytes(licenseKey.signature),
       messageBytes,
-      hexToBytes(PUBLIC_KEY_HEX)
+      hexToBytes(PUBLIC_KEY_HEX),
     );
 
     if (!isValidSig) {
@@ -74,7 +74,6 @@ export function verifyLicense(licenseString: string): VerificationResult {
 
     // すべてOK
     return { valid: true, payload: licenseKey.payload };
-    
   } catch (error) {
     return { valid: false, error: "Invalid format: Corrupted license string" };
   }

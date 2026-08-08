@@ -2,7 +2,7 @@
   "name": "@vault-insights/shared",
   "version": "0.0.1",
   "private": true,
-  "description": "プラグインとダッシュボードで共有する型定義・Zodスキーマ",
+  "description": "Shared type definitions and Zod schemas / プラグインとダッシュボードで共有する型定義・Zodスキーマ",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",

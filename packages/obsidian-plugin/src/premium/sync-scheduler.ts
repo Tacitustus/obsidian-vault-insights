@@ -31,14 +31,20 @@ export class SyncScheduler {
       // モバイルはOSによるサスペンドがあるため、起動時のオンデマンド同期を優先する
       this.runSync(true); // 起動時同期
       // 念のためインターバルも登録するが、アテにしすぎない
-      this.intervalId = window.setInterval(() => {
-        this.runSync(false);
-      }, intervalMinutes * 60 * 1000);
+      this.intervalId = window.setInterval(
+        () => {
+          this.runSync(false);
+        },
+        intervalMinutes * 60 * 1000,
+      );
     } else {
       // デスクトップ環境
-      this.intervalId = window.setInterval(() => {
-        this.runSync(false);
-      }, intervalMinutes * 60 * 1000);
+      this.intervalId = window.setInterval(
+        () => {
+          this.runSync(false);
+        },
+        intervalMinutes * 60 * 1000,
+      );
     }
 
     // プラグイン側に intervalId を登録してアンロード時に自動クリーンアップさせる
@@ -56,14 +62,16 @@ export class SyncScheduler {
 
   async runSync(isStartup: boolean = false): Promise<void> {
     if (this.isSyncing) return;
-    
+
     const store = this.plugin.getStore();
     const failures = store.getConsecutiveSyncFailures();
 
     if (failures >= 3) {
       // 連続失敗が3回に達した場合は一時停止
       this.stop();
-      new Notice("Vault Insights: 自動同期が連続して3回失敗したため、一時停止しました。設定から再開するか、手動で展開を試してください。");
+      new Notice(
+        "Vault Insights: 自動同期が連続して3回失敗したため、一時停止しました。設定から再開するか、手動で展開を試してください。",
+      );
       return;
     }
 
@@ -89,7 +97,11 @@ export class SyncScheduler {
       // Run lightweight push
       const orchestrator = new DeployOrchestrator(settings.githubToken);
       const label = settings.vaultAlias || this.plugin.app.vault.getName();
-      await orchestrator.pushSnapshotOnly(settings.githubRepoName || "vault-insights-dashboard", snapshot, label);
+      await orchestrator.pushSnapshotOnly(
+        settings.githubRepoName || "vault-insights-dashboard",
+        snapshot,
+        label,
+      );
 
       // Record success
       await store.recordSyncSuccess();
@@ -117,7 +129,11 @@ export class SyncScheduler {
       const orchestrator = new DeployOrchestrator(settings.githubToken);
       // await しても環境によってはプロセス終了で中断される
       const label = settings.vaultAlias || this.plugin.app.vault.getName();
-      await orchestrator.pushSnapshotOnly(settings.githubRepoName || "vault-insights-dashboard", snapshot, label);
+      await orchestrator.pushSnapshotOnly(
+        settings.githubRepoName || "vault-insights-dashboard",
+        snapshot,
+        label,
+      );
       console.log("Vault Insights: Final sync successful.");
     } catch (error) {
       console.error("Vault Insights: Final sync failed.", error);

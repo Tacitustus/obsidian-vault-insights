@@ -18,17 +18,17 @@ export function TopNotesTable({ notes, searchQuery }: Props) {
     let result = notes;
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
-      result = result.filter(n => n.notePath.toLowerCase().includes(q));
+      result = result.filter((n) => n.notePath.toLowerCase().includes(q));
     }
-    
+
     return result.sort((a, b) => {
       const valA = a[sortField];
       const valB = b[sortField];
-      
+
       if (typeof valA === "string" && typeof valB === "string") {
         return sortOrder === "asc" ? valA.localeCompare(valB) : valB.localeCompare(valA);
       }
-      
+
       if (valA < valB) return sortOrder === "asc" ? -1 : 1;
       if (valA > valB) return sortOrder === "asc" ? 1 : -1;
       return 0;
@@ -52,22 +52,54 @@ export function TopNotesTable({ notes, searchQuery }: Props) {
       <div className="p-5 border-b border-border">
         <h2 className="text-lg font-bold text-textPrimary">Top Notes</h2>
       </div>
-      
+
       <div className="overflow-x-auto premium-scrollbar max-h-[500px]">
         <table className="w-full text-left border-collapse">
           <thead className="sticky top-0 bg-surface/95 backdrop-blur-md z-10 shadow-sm border-b border-border">
             <tr>
-              <Th label="Note Name" field="notePath" current={sortField} order={sortOrder} onClick={toggleSort} />
-              <Th label="Opens" field="openCount" current={sortField} order={sortOrder} onClick={toggleSort} align="right" />
-              <Th label="Edits" field="editCount" current={sortField} order={sortOrder} onClick={toggleSort} align="right" />
-              <Th label="Last Accessed" field="lastOpened" current={sortField} order={sortOrder} onClick={toggleSort} align="right" />
+              <Th
+                label="Note Name"
+                field="notePath"
+                current={sortField}
+                order={sortOrder}
+                onClick={toggleSort}
+              />
+              <Th
+                label="Opens"
+                field="openCount"
+                current={sortField}
+                order={sortOrder}
+                onClick={toggleSort}
+                align="right"
+              />
+              <Th
+                label="Edits"
+                field="editCount"
+                current={sortField}
+                order={sortOrder}
+                onClick={toggleSort}
+                align="right"
+              />
+              <Th
+                label="Last Accessed"
+                field="lastOpened"
+                current={sortField}
+                order={sortOrder}
+                onClick={toggleSort}
+                align="right"
+              />
             </tr>
           </thead>
           <tbody>
             {displayNotes.length > 0 ? (
               displayNotes.map((note) => (
-                <tr key={note.noteId} className="border-b border-border/50 hover:bg-surfaceHover transition-colors">
-                  <td className="px-4 py-3 text-textPrimary font-medium break-all">{note.notePath || `Hidden ID:${note.noteId.slice(0,6)}`}</td>
+                <tr
+                  key={note.noteId}
+                  className="border-b border-border/50 hover:bg-surfaceHover transition-colors"
+                >
+                  <td className="px-4 py-3 text-textPrimary font-medium break-all">
+                    {note.notePath || `Hidden ID:${note.noteId.slice(0, 6)}`}
+                  </td>
                   <td className="px-4 py-3 text-right font-mono text-accent">{note.openCount}</td>
                   <td className="px-4 py-3 text-right font-mono text-warning">{note.editCount}</td>
                   <td className="px-4 py-3 text-right text-textSecondary whitespace-nowrap">
@@ -91,13 +123,16 @@ export function TopNotesTable({ notes, searchQuery }: Props) {
 
 function Th({ label, field, current, onClick, align = "left" }: any) {
   return (
-    <th 
+    <th
       className={`px-4 py-3 font-medium text-textSecondary cursor-pointer hover:text-textPrimary select-none ${align === "right" ? "text-right" : ""}`}
       onClick={() => onClick(field)}
     >
       <div className={`flex items-center gap-1 ${align === "right" ? "justify-end" : ""}`}>
         {label}
-        <ArrowUpDown size={14} className={`transition-opacity ${current === field ? "opacity-100 text-accent" : "opacity-30"}`} />
+        <ArrowUpDown
+          size={14}
+          className={`transition-opacity ${current === field ? "opacity-100 text-accent" : "opacity-30"}`}
+        />
       </div>
     </th>
   );

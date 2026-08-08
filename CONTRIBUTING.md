@@ -1,49 +1,56 @@
+English | [日本語](./CONTRIBUTING.ja.md)
+
+---
+
 # Contributing to Vault Insights
 
-Vault Insights へのコントリビュートをご検討いただき、ありがとうございます！
-このリポジトリは、以下の設計思想とルールに基づいて開発されています。PR（Pull Request）を作成する際は、必ずご一読ください。
+Thank you for considering contributing to Vault Insights!
+This repository is developed following specific architectural principles and guidelines. Please review this document thoroughly before opening a Pull Request (PR).
 
-## 1. プロジェクトの基本方針（サーバーレス・開発費用ゼロ）
+## 1. Core Project Philosophy (Serverless & Zero Maintenance Cost)
 
-本プロジェクトは「開発費用0円・サーバーレス」で運用する個人開発OSSです。
-開発者が管理するバックエンドサーバー（API, DB, 認証サーバーなど）を新たに構築・依存するような機能追加は受け付けていません。
-- **通信・ホスティング**: GitHub Pages / GitHub REST API など、ユーザー自身のリポジトリ・インフラ上で完結する設計を採用しています。
-- **決済**: 既存のSaaS（Gumroad / Lemon Squeezy 等）に完全委任し、サーバーサイドでの検証ロジックを持ちません。
+This project is an open-source personal project operated under a **$0 infrastructure & serverless** model.
+We do not accept contributions that introduce or depend on developer-hosted backend servers (such as custom APIs, databases, or authentication servers).
 
-## 2. デスクトップ＆モバイル（両OS）対応必須
+- **Communication & Hosting**: All functionality relies on user-owned infrastructure (GitHub Pages, GitHub REST API, etc.).
+- **Payments**: Delegated entirely to existing SaaS providers (Gumroad, Lemon Squeezy, Ko-fi, etc.) without custom server-side validation infrastructure.
 
-本プラグインは `isDesktopOnly: false` であり、**デスクトップ版とモバイル版（iOS/Android WebView環境）の両方で動作すること**が絶対の要件です。
-- ❌ `fs`, `path`, `child_process` などの Node.js 組み込みモジュールの直接利用
-- ❌ ブラウザの生の `fetch`（モバイルでの CORS 問題を避けるため）
-- ✅ 通信には必ず Obsidian の `requestUrl()` API を使用してください。
-- ✅ ファイル保存・永続化には `plugin.saveData()` / `loadData()` を使用してください。
-- モバイルで動作しない機能を追加する場合は、機能を削るのではなく「モバイルではUI上で制約事項として明示する」アプローチを取ってください。
+## 2. Desktop & Mobile Cross-Platform Requirement
 
-## 3. モノレポ構造と技術スタック
+This plugin specifies `isDesktopOnly: false` in `manifest.json`. **Flawless operation on both Desktop and Mobile (iOS / Android WebView environments) is mandatory**.
 
-本リポジトリは `pnpm workspaces` を用いたモノレポ構成です。
-- **`packages/obsidian-plugin`**: Obsidian プラグイン本体（TypeScript, esbuild）。起動時間に直結するため、過度な依存ライブラリの追加（特に React など）は禁止です。
-- **`packages/web-dashboard-template`**: Webダッシュボードの静的アセット（React, Vite, Tailwind）。ビルド成果物はプラグイン側に埋め込まれます。
-- **`packages/shared`**: 両者で共有する型定義（Zodスキーマ）。
+- ❌ Direct imports of Node.js built-in modules (`fs`, `path`, `child_process`).
+- ❌ Raw browser `fetch` (to avoid CORS issues in mobile WebViews).
+- ✅ Always use Obsidian's `requestUrl()` API for network requests.
+- ✅ Always use `plugin.saveData()` / `loadData()` for state persistence.
+- If a feature is constrained on mobile platforms, clearly explain the limitation in the UI rather than dropping the feature entirely or causing crashes.
 
-## 4. プライバシーとセキュリティ（厳守）
+## 3. Monorepo Structure & Tech Stack
 
-- **データ送信**: ユーザーのノート内容やクリック履歴などを、プラグイン開発者側に送信するコードは絶対に含めないでください。
-- **シークレット管理**: GitHub トークンなどは Vault 内のローカル設定に保存されます。ソースコード内にトークンや Client Secret をハードコードしないでください。
+This repository uses a `pnpm workspaces` monorepo configuration:
 
-## 5. 有料機能のバイパス禁止
+- **`packages/obsidian-plugin`**: Obsidian plugin codebase (TypeScript, esbuild). Keep dependencies minimal (avoid heavy frameworks like React in the core plugin) to protect startup performance.
+- **`packages/web-dashboard-template`**: Web dashboard static template (React, Vite, TailwindCSS). Build artifacts are embedded into the plugin at build time.
+- **`packages/shared`**: Shared type definitions and schemas (Zod schemas).
 
-- 有料（Premium）機能のライセンス検証は、完全なオフライン（Ed25519 署名検証）で行われます。
-- 開発者自身がテスト・利用する場合であっても、コード内に `if (isDeveloper) return true;` のような特別扱い（バイパス）を仕込むことは禁止です。必ず正規の検証パスを通過するようにしてください。
+## 4. Privacy & Security Rules (Strict)
 
-## 6. PR（Pull Request）提出時のチェックリスト
+- **Data Privacy**: Never include code that transmits user note contents or activity analytics to developer-managed endpoints.
+- **Secret Management**: User secrets (e.g. GitHub tokens) are stored locally in the vault settings. Never hardcode tokens or Client Secrets into the codebase.
 
-PR を提出する際は、以下の項目を満たしているか確認してください。
+## 5. Paid Feature Bypasses Strictly Prohibited
 
-- [ ] **TypeCheck / Lint が通っているか**: `pnpm -r typecheck` を実行し、エラーがないこと。
-- [ ] **ビルドが通るか**: `packages/obsidian-plugin` および `packages/web-dashboard-template` のビルドが成功すること。
-- [ ] **モバイルで動作するか**: 追加した機能が Node.js API や `fetch` に依存しておらず、モバイル環境でクラッシュしないこと。
-- [ ] **単一の関心事か**: 1つの PR に複数の無関係な機能追加やリファクタリングを含めないでください（1 PR = 1 Feature / Fix）。
-- [ ] **Conventional Commits**: コミットメッセージに `feat:`, `fix:`, `chore:` などのプレフィックスを使用しているか。
+- License verification for Premium features is performed purely offline (Ed25519 signature verification).
+- Even for developer testing or personal use, adding backdoor bypasses like `if (isDeveloper) return true;` is strictly forbidden. All access must pass through official verification code paths.
 
-以上をご確認の上、素晴らしいアイデアをお待ちしております！
+## 6. Pull Request Submission Checklist
+
+Please ensure your PR satisfies the following before submission:
+
+- [ ] **TypeCheck & Linting**: `pnpm -r typecheck` and `pnpm -r lint` pass cleanly with no errors.
+- [ ] **Build Verification**: Builds for `packages/obsidian-plugin` and `packages/web-dashboard-template` complete successfully.
+- [ ] **Mobile Compatibility**: New code does not depend on Node.js APIs or raw `fetch`, ensuring zero mobile crashes.
+- [ ] **Single Concern**: Keep PRs focused (1 PR = 1 Feature or Bugfix). Avoid bundling unrelated refactoring.
+- [ ] **Conventional Commits**: Use commit prefixes such as `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`.
+
+Thank you for helping make Vault Insights better!
