@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import type { VaultIndex, VaultSnapshot } from "@vault-insights/shared";
 import {
   BarChart,
@@ -28,6 +29,7 @@ export function CrossVaultSummary({ vaultIndex }: Props) {
   const [data, setData] = useState<SummaryData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     let isMounted = true;
@@ -35,7 +37,7 @@ export function CrossVaultSummary({ vaultIndex }: Props) {
     const fetchAllSnapshots = async () => {
       setLoading(true);
       try {
-        const fetchPromises = vaultIndex.vaults.map(async (v) => {
+        const fetchPromises = vaultIndex.vaults.map(async (v: VaultIndex["vaults"][number]) => {
           const res = await fetch(v.snapshotPath);
           if (!res.ok) throw new Error(`Failed to fetch ${v.label}`);
           const snapshot: VaultSnapshot = await res.json();
@@ -51,7 +53,7 @@ export function CrossVaultSummary({ vaultIndex }: Props) {
         const results = await Promise.allSettled(fetchPromises);
 
         const successfulData: SummaryData[] = [];
-        results.forEach((result) => {
+        results.forEach((result: PromiseSettledResult<SummaryData>) => {
           if (result.status === "fulfilled") {
             successfulData.push(result.value);
           } else {
@@ -89,15 +91,15 @@ export function CrossVaultSummary({ vaultIndex }: Props) {
     <div className="space-y-8 animate-fade-in">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-surface p-6 rounded-2xl shadow-sm border border-border">
-          <h3 className="text-textSecondary text-sm font-medium mb-1">Total Vaults</h3>
+          <h3 className="text-textSecondary text-sm font-medium mb-1">{t("totalVaults")}</h3>
           <p className="text-3xl font-bold text-textPrimary">{data.length}</p>
         </div>
         <div className="bg-surface p-6 rounded-2xl shadow-sm border border-border">
-          <h3 className="text-textSecondary text-sm font-medium mb-1">Total Notes</h3>
+          <h3 className="text-textSecondary text-sm font-medium mb-1">{t("noteCount")}</h3>
           <p className="text-3xl font-bold text-textPrimary">{globalTotalNotes.toLocaleString()}</p>
         </div>
         <div className="bg-surface p-6 rounded-2xl shadow-sm border border-border">
-          <h3 className="text-textSecondary text-sm font-medium mb-1">Total Activity</h3>
+          <h3 className="text-textSecondary text-sm font-medium mb-1">{t("totalActivity")}</h3>
           <p className="text-3xl font-bold text-textPrimary">
             {(globalTotalOpens + globalTotalEdits).toLocaleString()}
           </p>
@@ -105,7 +107,7 @@ export function CrossVaultSummary({ vaultIndex }: Props) {
       </div>
 
       <div className="bg-surface p-6 rounded-2xl shadow-sm border border-border">
-        <h2 className="text-xl font-bold text-textPrimary mb-6">Vault Activity Comparison</h2>
+        <h2 className="text-xl font-bold text-textPrimary mb-6">{t("vaultActivityComparison")}</h2>
         <div className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>

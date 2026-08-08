@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import type { NoteAggregate } from "@vault-insights/shared";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
@@ -7,6 +8,8 @@ interface Props {
 }
 
 export function TagBreakdownChart({ notes }: Props) {
+  const { t } = useTranslation();
+  
   const data = useMemo(() => {
     const counts = new Map<string, number>();
     for (const note of notes) {
@@ -24,14 +27,14 @@ export function TagBreakdownChart({ notes }: Props) {
   if (data.length === 0) {
     return (
       <div className="glass-panel p-5 flex flex-col items-center justify-center h-[350px]">
-        <p className="text-textSecondary italic">No tags found in the current vault.</p>
+        <p className="text-textSecondary italic">{t("noTagsFound")}</p>
       </div>
     );
   }
 
   return (
     <div className="glass-panel p-5 flex flex-col h-[350px]">
-      <h2 className="text-lg font-bold text-textPrimary mb-4">Top Tags</h2>
+      <h2 className="text-lg font-bold text-textPrimary mb-4">{t("topTags")}</h2>
       <div className="flex-1 min-h-0">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart

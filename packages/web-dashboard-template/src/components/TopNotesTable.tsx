@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import type { NoteAggregate } from "@vault-insights/shared";
 import { ArrowUpDown } from "lucide-react";
 
@@ -14,11 +15,18 @@ export function TopNotesTable({ notes, searchQuery }: Props) {
   const [sortField, setSortField] = useState<SortField>("openCount");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
 
+  const { t } = useTranslation();
+
   const filteredAndSorted = useMemo(() => {
     let result = notes;
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
-      result = result.filter((n) => n.notePath.toLowerCase().includes(q));
+      // tagsも検索対象に含める
+      result = result.filter((n) => {
+        const matchPath = n.notePath.toLowerCase().includes(q);
+        const matchTag = n.tags && n.tags.some(tag => tag.toLowerCase().includes(q.replace(/^#/, '')));
+        return matchPath || matchTag;
+      });
     }
 
     return result.sort((a, b) => {
@@ -49,8 +57,11 @@ export function TopNotesTable({ notes, searchQuery }: Props) {
 
   return (
     <div className="glass-panel overflow-hidden flex flex-col">
-      <div className="p-5 border-b border-border">
-        <h2 className="text-lg font-bold text-textPrimary">Top Notes</h2>
+      <div className="p-5 border-b border-border flex justify-between items-center">
+        <h2 className="text-lg font-bold text-textPrimary">{t("topNotes")}</h2>
+        {searchQuery && (
+          <span className="text-sm text-textSecondary">{t("searchMatchCount", { count: displayNotes.length })}</span>
+        )}
       </div>
 
       <div className="overflow-x-auto premium-scrollbar max-h-[500px]">
@@ -65,7 +76,7 @@ export function TopNotesTable({ notes, searchQuery }: Props) {
                 onClick={toggleSort}
               />
               <Th
-                label="Opens"
+                label={t("totalOpens")}
                 field="openCount"
                 current={sortField}
                 order={sortOrder}
@@ -73,7 +84,7 @@ export function TopNotesTable({ notes, searchQuery }: Props) {
                 align="right"
               />
               <Th
-                label="Edits"
+                label={t("totalEdits")}
                 field="editCount"
                 current={sortField}
                 order={sortOrder}
@@ -98,7 +109,7 @@ export function TopNotesTable({ notes, searchQuery }: Props) {
                   className="border-b border-border/50 hover:bg-surfaceHover transition-colors"
                 >
                   <td className="px-4 py-3 text-textPrimary font-medium break-all">
-                    {note.notePath || `Hidden ID:${note.noteId.slice(0, 6)}`}
+                    {note.notePath || `${t("hidden")} ID:${note.noteId.slice(0, 6)}`}
                   </td>
                   <td className="px-4 py-3 text-right font-mono text-accent">{note.openCount}</td>
                   <td className="px-4 py-3 text-right font-mono text-warning">{note.editCount}</td>
@@ -110,7 +121,7 @@ export function TopNotesTable({ notes, searchQuery }: Props) {
             ) : (
               <tr>
                 <td colSpan={4} className="px-4 py-12 text-center text-textSecondary italic">
-                  No notes found matching your criteria.
+                  {t("noSearchResults")}
                 </td>
               </tr>
             )}

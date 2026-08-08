@@ -1,4 +1,5 @@
 import { Activity, FileText, Edit2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { Totals } from "@vault-insights/shared";
 
 interface Props {
@@ -6,22 +7,24 @@ interface Props {
 }
 
 export function SummaryCards({ totals }: Props) {
+  const { t } = useTranslation();
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
       <Card
-        title="Total Notes"
+        title={t("noteCount")}
         value={totals.noteCount}
         icon={<FileText size={24} />}
         color="text-accent"
       />
       <Card
-        title="Total Opens"
+        title={t("totalOpens")}
         value={totals.totalOpens}
         icon={<Activity size={24} />}
         color="text-success"
       />
       <Card
-        title="Total Edits"
+        title={t("totalEdits")}
         value={totals.totalEdits}
         icon={<Edit2 size={24} />}
         color="text-warning"

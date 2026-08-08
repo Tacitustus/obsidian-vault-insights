@@ -49,7 +49,7 @@ if (!payload.expiresAt) delete payload.expiresAt;
 
 const messageStr = JSON.stringify(payload);
 const messageBytes = new TextEncoder().encode(messageStr);
-const signatureBytes = ed25519.sign(messageBytes, privateKeyHex);
+const signatureBytes = ed25519.sign(messageBytes, Buffer.from(privateKeyHex, "hex"));
 const signatureHex = Buffer.from(signatureBytes).toString("hex");
 
 const licenseObj = {

@@ -3,6 +3,7 @@ import type VaultInsightsPlugin from "../main";
 import { DeployOrchestrator } from "./deploy-orchestrator";
 import { createVaultSnapshot } from "../core/snapshot-builder";
 import { aggregateEvents } from "../core/aggregator";
+import { enrichAggregatesWithVaultFiles } from "../core/vault-enricher";
 import { isPremiumUser } from "./license";
 
 export class SyncScheduler {
@@ -91,8 +92,9 @@ export class SyncScheduler {
 
       // Generate snapshot
       const events = this.plugin.getEvents();
-      const notes = aggregateEvents([...events]);
-      const snapshot = createVaultSnapshot(settings.vaultId, notes);
+      const baseNotes = aggregateEvents([...events]);
+      const enrichedNotes = enrichAggregatesWithVaultFiles(this.plugin.app, baseNotes, settings.privacyMode);
+      const snapshot = createVaultSnapshot(settings.vaultId, enrichedNotes);
 
       // Run lightweight push
       const orchestrator = new DeployOrchestrator(settings.githubToken);
@@ -123,8 +125,9 @@ export class SyncScheduler {
     try {
       console.log("Vault Insights: Attempting final sync on unload...");
       const events = this.plugin.getEvents();
-      const notes = aggregateEvents([...events]);
-      const snapshot = createVaultSnapshot(settings.vaultId, notes);
+      const baseNotes = aggregateEvents([...events]);
+      const enrichedNotes = enrichAggregatesWithVaultFiles(this.plugin.app, baseNotes, settings.privacyMode);
+      const snapshot = createVaultSnapshot(settings.vaultId, enrichedNotes);
 
       const orchestrator = new DeployOrchestrator(settings.githubToken);
       // await しても環境によってはプロセス終了で中断される

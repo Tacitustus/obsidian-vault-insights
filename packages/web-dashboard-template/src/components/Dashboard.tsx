@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { VaultSnapshot } from "@vault-insights/shared";
 import { SummaryCards } from "./SummaryCards";
 import { TopNotesTable } from "./TopNotesTable";
@@ -12,6 +13,7 @@ interface Props {
 
 export function Dashboard({ snapshot }: Props) {
   const [searchQuery, setSearchQuery] = useState("");
+  const { t } = useTranslation();
 
   return (
     <div className="flex flex-col gap-6">
@@ -19,7 +21,7 @@ export function Dashboard({ snapshot }: Props) {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 glass-panel p-4 mb-2">
         <div>
           <p className="text-textSecondary text-sm">
-            Last updated: {new Date(snapshot.generatedAt).toLocaleString()}
+            {t("syncTime")}: {new Date(snapshot.generatedAt).toLocaleString()}
           </p>
         </div>
 
@@ -30,7 +32,7 @@ export function Dashboard({ snapshot }: Props) {
           <input
             type="text"
             className="block w-full pl-10 pr-3 py-2 border border-border rounded-lg leading-5 bg-background text-textPrimary placeholder-textSecondary focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent sm:text-sm transition-all"
-            placeholder="Search notes..."
+            placeholder={t("searchPlaceholder")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />

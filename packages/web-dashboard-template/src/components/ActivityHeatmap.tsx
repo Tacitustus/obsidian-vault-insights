@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import type { NoteAggregate } from "@vault-insights/shared";
 
 interface Props {
@@ -6,6 +7,8 @@ interface Props {
 }
 
 export function ActivityHeatmap({ notes }: Props) {
+  const { t } = useTranslation();
+
   // Map lastOpened to a daily count
   const dailyCounts = useMemo(() => {
     const counts = new Map<string, number>();
@@ -51,7 +54,7 @@ export function ActivityHeatmap({ notes }: Props) {
 
   return (
     <div className="glass-panel p-5 flex flex-col">
-      <h2 className="text-lg font-bold text-textPrimary mb-4">Activity (Last Accessed)</h2>
+      <h2 className="text-lg font-bold text-textPrimary mb-4">{t("activityHeatmap")}</h2>
 
       <div className="flex flex-col items-center">
         {/* We use a simple wrap layout for the heatmap to handle mobile gracefully */}
@@ -66,13 +69,13 @@ export function ActivityHeatmap({ notes }: Props) {
         </div>
 
         <div className="flex items-center gap-2 mt-4 text-xs text-textSecondary self-end">
-          <span>Less</span>
+          <span>{t("less")}</span>
           <div className="w-3 h-3 rounded-sm bg-surfaceHover" />
           <div className="w-3 h-3 rounded-sm bg-accent/40" />
           <div className="w-3 h-3 rounded-sm bg-accent/60" />
           <div className="w-3 h-3 rounded-sm bg-accent/80" />
           <div className="w-3 h-3 rounded-sm bg-accent" />
-          <span>More</span>
+          <span>{t("more")}</span>
         </div>
       </div>
     </div>

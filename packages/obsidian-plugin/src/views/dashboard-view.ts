@@ -1,6 +1,8 @@
 import { ItemView, WorkspaceLeaf, setIcon } from "obsidian";
 import type VaultInsightsPlugin from "../main";
 import { aggregateEvents } from "../core/aggregator";
+import { enrichAggregatesWithVaultFiles } from "../core/vault-enricher";
+import { t } from "../i18n";
 import {
   filterAndSortNotes,
   getTopOpenedNotes,
@@ -56,7 +58,9 @@ export class DashboardView extends ItemView {
 
     // Fetch and aggregate data
     const events = this.plugin.getEvents();
-    const allNotes = aggregateEvents([...events]);
+    const baseNotes = aggregateEvents([...events]);
+    const settings = this.plugin.getSettings();
+    const allNotes = enrichAggregatesWithVaultFiles(this.plugin.app, baseNotes, settings.privacyMode);
 
     // Calculate total stats
     const totalOpens = allNotes.reduce((sum, n) => sum + n.openCount, 0);
@@ -71,9 +75,9 @@ export class DashboardView extends ItemView {
 
     // Summary Cards
     const summaryContainer = container.createEl("div", { cls: "vi-summary-cards" });
-    this.createSummaryCard(summaryContainer, "総ノート数", allNotes.length.toString(), "files");
-    this.createSummaryCard(summaryContainer, "総オープン数", totalOpens.toString(), "eye");
-    this.createSummaryCard(summaryContainer, "総編集数", totalEdits.toString(), "edit-2");
+    this.createSummaryCard(summaryContainer, t("totalNotes"), allNotes.length.toString(), "files");
+    this.createSummaryCard(summaryContainer, t("totalOpens"), totalOpens.toString(), "eye");
+    this.createSummaryCard(summaryContainer, t("totalEdits"), totalEdits.toString(), "edit-2");
 
     // Two-column layout
     const grid = container.createEl("div", { cls: "vi-grid" });
@@ -112,14 +116,14 @@ export class DashboardView extends ItemView {
     const card = parent.createEl("div", { cls: "vi-card vi-main-list" });
 
     const header = card.createEl("div", { cls: "vi-card-header" });
-    header.createEl("h3", { text: "ノート一覧" });
+    header.createEl("h3", { text: t("noteList") });
 
     // Controls: Search & Sort
     const controls = card.createEl("div", { cls: "vi-controls" });
 
     const searchInput = controls.createEl("input", {
       type: "text",
-      placeholder: "ノートを検索...",
+      placeholder: t("searchNotes"),
       cls: "vi-search-input",
     });
     searchInput.value = this.filterOpts.searchQuery;
@@ -130,11 +134,11 @@ export class DashboardView extends ItemView {
 
     const sortSelect = controls.createEl("select", { cls: "vi-sort-select" });
     const options = [
-      { val: "openCount-desc", label: "オープン数 (多い順)" },
-      { val: "openCount-asc", label: "オープン数 (少ない順)" },
-      { val: "editCount-desc", label: "編集数 (多い順)" },
-      { val: "lastOpened-desc", label: "最後に開いた日時" },
-      { val: "notePath-asc", label: "ノート名 (A-Z)" },
+      { val: "openCount-desc", label: t("sortOpenDesc") },
+      { val: "openCount-asc", label: t("sortOpenAsc") },
+      { val: "editCount-desc", label: t("sortEditDesc") },
+      { val: "lastOpened-desc", label: t("sortLastAccessed") },
+      { val: "notePath-asc", label: t("sortNameAsc") },
     ];
     options.forEach((opt) => {
       const optionEl = sortSelect.createEl("option", { text: opt.label, value: opt.val });
@@ -166,17 +170,17 @@ export class DashboardView extends ItemView {
     );
 
     if (displayNotes.length === 0) {
-      container.createEl("div", { cls: "vi-empty-state", text: "ノートが見つかりません" });
+      container.createEl("div", { cls: "vi-empty-state", text: t("noNotesFound") });
       return;
     }
 
     const table = container.createEl("table", { cls: "vi-table" });
     const thead = table.createEl("thead");
     const tr = thead.createEl("tr");
-    tr.createEl("th", { text: "ノート名" });
-    tr.createEl("th", { text: "オープン" });
-    tr.createEl("th", { text: "編集" });
-    tr.createEl("th", { text: "最終アクセス" });
+    tr.createEl("th", { text: t("colNoteName") });
+    tr.createEl("th", { text: t("colOpen") });
+    tr.createEl("th", { text: t("colEdit") });
+    tr.createEl("th", { text: t("colAccessed") });
 
     const tbody = table.createEl("tbody");
     displayNotes.forEach((note) => {
@@ -184,7 +188,7 @@ export class DashboardView extends ItemView {
 
       const nameCell = row.createEl("td", { cls: "vi-td-name" });
       // If privacy mode is on, notePath might be empty
-      nameCell.setText(note.notePath || `(Hidden) ${note.noteId.slice(0, 8)}`);
+      nameCell.setText(note.notePath || `${t("hidden")} ${note.noteId.slice(0, 8)}`);
 
       row.createEl("td", { text: note.openCount.toString(), cls: "vi-td-num" });
       row.createEl("td", { text: note.editCount.toString(), cls: "vi-td-num" });
@@ -197,10 +201,10 @@ export class DashboardView extends ItemView {
 
   private renderTopNotesCard(parent: HTMLElement, topNotes: NoteAggregate[]) {
     const card = parent.createEl("div", { cls: "vi-card" });
-    card.createEl("h3", { text: "よく開くノート Top 10", cls: "vi-card-header" });
+    card.createEl("h3", { text: t("topNotes"), cls: "vi-card-header" });
 
     if (topNotes.length === 0) {
-      card.createEl("div", { cls: "vi-empty-state", text: "データがありません" });
+      card.createEl("div", { cls: "vi-empty-state", text: t("noData") });
       return;
     }
 
@@ -218,10 +222,10 @@ export class DashboardView extends ItemView {
 
   private renderUnopenedNotesCard(parent: HTMLElement, unopened: NoteAggregate[]) {
     const card = parent.createEl("div", { cls: "vi-card" });
-    card.createEl("h3", { text: "未オープンのノート", cls: "vi-card-header" });
+    card.createEl("h3", { text: t("unopenedNotes"), cls: "vi-card-header" });
 
     if (unopened.length === 0) {
-      card.createEl("div", { cls: "vi-empty-state", text: "すべて閲覧済みです！" });
+      card.createEl("div", { cls: "vi-empty-state", text: t("allRead") });
       return;
     }
 
@@ -241,7 +245,7 @@ export class DashboardView extends ItemView {
     if (unopened.length > 20) {
       list.createEl("div", {
         cls: "vi-compact-list-item vi-more",
-        text: `他 ${unopened.length - 20} 件...`,
+        text: t("otherNotes", { count: unopened.length - 20 }),
       });
     }
   }
@@ -251,10 +255,10 @@ export class DashboardView extends ItemView {
     tagCounts: { tag: string; count: number; maxCount: number }[],
   ) {
     const card = parent.createEl("div", { cls: "vi-card" });
-    card.createEl("h3", { text: "タグ別統計", cls: "vi-card-header" });
+    card.createEl("h3", { text: t("tagStats"), cls: "vi-card-header" });
 
     if (tagCounts.length === 0) {
-      card.createEl("div", { cls: "vi-empty-state", text: "タグが見つかりません" });
+      card.createEl("div", { cls: "vi-empty-state", text: t("noTags") });
       return;
     }
 

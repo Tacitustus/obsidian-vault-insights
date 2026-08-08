@@ -5,6 +5,7 @@ import { LocalStore, type VaultInsightsSettings } from "./storage/local-store";
 import { VaultInsightsSettingTab } from "./settings-tab";
 import { createVaultSnapshot } from "./core/snapshot-builder";
 import { aggregateEvents } from "./core/aggregator";
+import { enrichAggregatesWithVaultFiles } from "./core/vault-enricher";
 import { SyncScheduler } from "./premium/sync-scheduler";
 
 /**
@@ -157,9 +158,10 @@ export default class VaultInsightsPlugin extends Plugin {
     try {
       // 1. データの生成
       const events = this.store.getEvents();
-      const notes = aggregateEvents([...events]);
+      const baseNotes = aggregateEvents([...events]);
       const settings = this.store.getSettings();
-      const snapshot = createVaultSnapshot(settings.vaultId, notes);
+      const enrichedNotes = enrichAggregatesWithVaultFiles(this.app, baseNotes, settings.privacyMode);
+      const snapshot = createVaultSnapshot(settings.vaultId, enrichedNotes);
 
       // 2. Zodスキーマによる検証
       const validation = validateSnapshot(snapshot);

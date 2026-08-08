@@ -18,6 +18,7 @@ import {
 import { DeployOrchestrator } from "./premium/deploy-orchestrator";
 import { createVaultSnapshot } from "./core/snapshot-builder";
 import { aggregateEvents } from "./core/aggregator";
+import { enrichAggregatesWithVaultFiles } from "./core/vault-enricher";
 
 export class VaultInsightsSettingTab extends PluginSettingTab {
   private readonly plugin: VaultInsightsPlugin;
@@ -316,8 +317,9 @@ export class VaultInsightsSettingTab extends PluginSettingTab {
     try {
       // 現在のデータを集計してスナップショットを作成
       const events = this.plugin.getEvents();
-      const notes = aggregateEvents([...events]);
-      const snapshot = createVaultSnapshot(settings.vaultId, notes);
+      const baseNotes = aggregateEvents([...events]);
+      const enrichedNotes = enrichAggregatesWithVaultFiles(this.app, baseNotes, settings.privacyMode);
+      const snapshot = createVaultSnapshot(settings.vaultId, enrichedNotes);
 
       const orchestrator = new DeployOrchestrator(settings.githubToken);
       const label = settings.vaultAlias || this.app.vault.getName();

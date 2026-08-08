@@ -1,5 +1,6 @@
 import type { VaultIndex } from "@vault-insights/shared";
 import { Folder } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   vaultIndex: VaultIndex;
@@ -8,9 +9,11 @@ interface Props {
 }
 
 export function VaultSwitcher({ vaultIndex, selectedId, onSelect }: Props) {
+  const { t } = useTranslation();
+
   if (vaultIndex.vaults.length <= 1) {
     // 1つしかない場合は単なるタイトル表示
-    const name = vaultIndex.vaults[0]?.label || "Vault Insights";
+    const name = vaultIndex.vaults[0]?.label || t("dashboard");
     return (
       <div className="flex items-center gap-3">
         <div className="p-2 bg-accent/20 text-accent rounded-lg">
@@ -28,7 +31,7 @@ export function VaultSwitcher({ vaultIndex, selectedId, onSelect }: Props) {
         <div className="p-2 bg-accent/20 text-accent rounded-lg">
           <Folder size={20} />
         </div>
-        <h1 className="text-xl font-bold text-textPrimary hidden md:block">Vaults:</h1>
+        <h1 className="text-xl font-bold text-textPrimary hidden md:block">{t("vaults")}:</h1>
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -40,9 +43,9 @@ export function VaultSwitcher({ vaultIndex, selectedId, onSelect }: Props) {
               : "bg-surface text-textSecondary hover:bg-surfaceHover hover:text-textPrimary"
           }`}
         >
-          全体サマリー
+          {t("overallSummary")}
         </button>
-        {vaultIndex.vaults.map((v) => (
+        {vaultIndex.vaults.map((v: VaultIndex["vaults"][number]) => (
           <button
             key={v.vaultId}
             onClick={() => onSelect(v.vaultId)}

@@ -3,7 +3,7 @@ import { hexToBytes } from "@noble/hashes/utils.js";
 
 // 開発者が後で差し替えるための仮の公開鍵（Hex文字列）
 // 秘密鍵はリポジトリには含めず、環境変数やローカルの.env等から読み込ませます。
-export const PUBLIC_KEY_HEX = "834a4d214a29590a523a81a69296e0175033ad8dd8abf258150c32300c4361fc";
+export const PUBLIC_KEY_HEX = "d21e8ca6c91d7e3a1580858c9b9dc4d5a1741ef3f3999eb5fe3b727ac42c5b6c";
 
 export interface LicensePayload {
   issuedTo?: string;
