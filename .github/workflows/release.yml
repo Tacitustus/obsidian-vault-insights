@@ -1,0 +1,69 @@
+name: Release Obsidian Plugin
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Verify Version Match
+        run: |
+          MANIFEST_VERSION=$(jq -r .version packages/obsidian-plugin/manifest.json)
+          TAG_VERSION=${GITHUB_REF#refs/tags/v}
+          if [ "$MANIFEST_VERSION" != "$TAG_VERSION" ]; then
+            echo "Error: manifest.json version ($MANIFEST_VERSION) does not match tag version ($TAG_VERSION)"
+            exit 1
+          fi
+
+      - name: Build Shared Package
+        run: pnpm --filter @vault-insights/shared build
+
+      - name: Build Web Dashboard Template
+        run: pnpm --filter @vault-insights/web-dashboard-template build
+
+      - name: Embed Dashboard Assets
+        run: node scripts/embed-dashboard-assets.mjs
+
+      - name: Build Obsidian Plugin
+        run: pnpm --filter @vault-insights/obsidian-plugin build
+
+      - name: Prepare Release Assets
+        run: |
+          mkdir -p release-assets
+          cp packages/obsidian-plugin/main.js release-assets/
+          cp packages/obsidian-plugin/manifest.json release-assets/
+          if [ -f packages/obsidian-plugin/styles.css ]; then
+            cp packages/obsidian-plugin/styles.css release-assets/
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release-assets/main.js
+            release-assets/manifest.json
+            release-assets/styles.css
+          generate_release_notes: true

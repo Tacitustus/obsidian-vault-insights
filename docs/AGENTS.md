@@ -60,20 +60,29 @@
 
 ## 2. 技術スタックの固定方針
 
-| 領域 | 採用技術 | 理由 |
-|---|---|---|
-| プラグイン言語 | TypeScript (strict) | Obsidian公式サンプルに準拠 |
-| プラグインビルド | esbuild | Obsidian公式サンプルの標準構成、軽量・高速 |
-| Webダッシュボード | React 18 + TypeScript + TailwindCSS + Vite | ユーザー指定 |
-| バリデーション | Zod | JSONエクスポート形式の実行時検証に使う |
-| グラフ描画 | Recharts（軽量・依存少） | 過剰なライブラリは避ける |
-| 状態管理 | React標準 (useState/useReducer/Context) | 小規模アプリにReduxやZustandは過剰 |
-| Lint/Format | ESLint + Prettier | Obsidianプラグインコミュニティの慣例に合わせる |
-| テスト | Vitest | Viteエコシステムと親和性が高い |
-| CI | GitHub Actions | 追加コストなし |
+| 領域              | 採用技術                                   | 理由                                           |
+| ----------------- | ------------------------------------------ | ---------------------------------------------- |
+| プラグイン言語    | TypeScript (strict)                        | Obsidian公式サンプルに準拠                     |
+| プラグインビルド  | esbuild                                    | Obsidian公式サンプルの標準構成、軽量・高速     |
+| Webダッシュボード | React 18 + TypeScript + TailwindCSS + Vite | ユーザー指定                                   |
+| バリデーション    | Zod                                        | JSONエクスポート形式の実行時検証に使う         |
+| グラフ描画        | Recharts（軽量・依存少）                   | 過剰なライブラリは避ける                       |
+| 状態管理          | React標準 (useState/useReducer/Context)    | 小規模アプリにReduxやZustandは過剰             |
+| Lint/Format       | ESLint + Prettier                          | Obsidianプラグインコミュニティの慣例に合わせる |
+| テスト            | Vitest                                     | Viteエコシステムと親和性が高い                 |
+| CI                | GitHub Actions                             | 追加コストなし                                 |
 
 新しい依存ライブラリを追加する前に「本当に必要か／esbuild成果物のバンドルサイズを
 不必要に膨らませないか」を検討すること。Obsidianプラグインは起動時間に敏感なユーザーが多い。
+
+**パッケージ間でのバンドルサイズ制約の違いに注意すること。**
+`web-dashboard-template` と `obsidian-plugin` はバンドルサイズ制約のシビアさが異なる。
+前者はユーザーのブラウザで一度読み込まれるだけの静的サイトのため、軽量なUIライブラリ
+（例: `lucide-react` などtree-shaking可能なアイコンライブラリ）の追加は許容範囲が広い。
+後者はObsidian起動時間に直結するため、依存追加には引き続き慎重を要する
+（Reactを含め、原則として持ち込まない。0.5章参照）。
+`web-dashboard-template` にライブラリを追加する場合も、named importでtree-shakingが
+効く書き方に統一し、バレルインポート（全量import）は避けること。
 
 ## 3. コーディング規約
 

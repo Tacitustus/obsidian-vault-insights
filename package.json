@@ -1,0 +1,25 @@
+{
+  "name": "obsidian-vault-insights",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Obsidian Vault Insights — Obsidianの利用状況を可視化する分析プラグイン & Webダッシュボード",
+  "scripts": {
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "build": "pnpm -r build",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.15.4",
+  "dependencies": {
+    "@noble/curves": "^2.3.0"
+  }
+}
